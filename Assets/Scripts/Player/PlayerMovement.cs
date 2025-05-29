@@ -8,7 +8,6 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Move Settings")]
     [SerializeField] private float _playerMoveSpeed;
-    [SerializeField] private Transform _avatar;
 
     private Player _player;
     private Vector2 _moveInput;
