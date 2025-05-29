@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe8bfc7a1402364f875f2ae0fe2e7c6, type: 3}
   m_Name: BubbleDataSO
   m_EditorClassIdentifier: 
-  Force: 15
-  GrowDuration: 1
+  Force: 10
+  GrowDuration: 0.5
   StartScale: 0.1
   EndScale: 2
+  EncapsulateScale: 4
   PopEffect: {fileID: 3027976759136843694, guid: d1ab269e38e9199489dc8aee32a227bf,
     type: 3}
+  PopEffectDuration: 1
+  PlayerYOffset: -0.6
