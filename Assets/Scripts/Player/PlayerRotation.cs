@@ -5,11 +5,13 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class PlayerRotate : MonoBehaviour
+public class PlayerRotation : MonoBehaviour
 {
-    [Header("Rotate Settings")]
+    [Header("Speed Settings")]
     [SerializeField] [Range(1f, 10f)] private float _rotateSpeed;
     [SerializeField] [Range(0.5f, 5f)] private float _pitchSpeed;
+
+    [Header("Pitch Settings")]
     [SerializeField] private bool _pitchInverse;
     [SerializeField] [Range(-60f, 0f)] private float _minPitch;
     [SerializeField] [Range(0f, 60f)] private float _maxPitch;

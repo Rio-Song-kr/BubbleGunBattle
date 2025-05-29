@@ -60,11 +60,6 @@ public class InputController : MonoBehaviour
         _rotate.canceled -= OnRotateCanceled;
     }
 
-    private void Start()
-    {
-        Debug.Log($"[{Time.frameCount}] InputController Start Called");
-    }
-
     //# 핸들러 메서드
     private void OnMovePerformed(InputAction.CallbackContext ctx) => OnMove?.Invoke(ctx.ReadValue<Vector2>());
     private void OnMoveCanceled(InputAction.CallbackContext ctx) => OnMove?.Invoke(Vector2.zero);
