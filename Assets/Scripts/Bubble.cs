@@ -9,8 +9,8 @@ public class Bubble : MonoBehaviour
     private Rigidbody _rigidbody;
     private SphereCollider _collider;
 
-    private Rigidbody _playerRigidbody;
     private Transform _playerTransform;
+    private Player _player;
 
     private Coroutine _growBubbleCoroutine;
     private float _parentScale;
@@ -26,6 +26,7 @@ public class Bubble : MonoBehaviour
         _detector.PlayerFound -= FindPlayer;
         _detector.PlayerFound += FindPlayer;
 
+        //# 시작 크기를 BubbleDataSO의 StartScale로 설정
         transform.localScale = Vector3.one * _bubbleData.StartScale;
 
         Move();
@@ -54,57 +55,48 @@ public class Bubble : MonoBehaviour
     {
         if (!found) return;
 
-        _detector.PlayerFound -= FindPlayer;
-
-        _playerTransform = playerTransform;
-
         //# 기존 endScale off
         StopCoroutine(_growBubbleCoroutine);
 
-        //# 플레이어가 갖혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
-        _playerRigidbody = playerTransform.GetComponent<Rigidbody>();
-        _playerRigidbody.useGravity = false;
-        _playerRigidbody.isKinematic = true;
+        _detector.PlayerFound -= FindPlayer;
 
-        //# Player와의 충돌을 방지하기 위해 trigger 설정
-        _collider.isTrigger = true;
-
-        //# bubble의 속도 초기화
-        _rigidbody.velocity = Vector3.zero;
-
+        //# 버블이 Player를 감싸기 위한 코드
         //# 버블의 position 중 y축은 기존 위치를 유지하고, 나머지는 player의 position을 사용하여 이동
         var position = _playerTransform.position;
         position.y = transform.position.y;
         transform.position = position;
 
+        //# 버블을 맞은 플레이어 설정
+        SetPlayerInBubble(playerTransform);
+
+        //# 새로운 scale 적용
+        _growBubbleCoroutine =
+            StartCoroutine(GrowBubble(_bubbleData.EncapsulateScale, _bubbleData.GrowDuration, _playerTransform));
+    }
+
+    private void SetPlayerInBubble(Transform playerTransform)
+    {
+        _playerTransform = playerTransform;
+        _player = _playerTransform.GetComponent<Player>();
+
+        //# 플레이어가 갖혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
+        _player.InBubble();
+
         //# player가 버블에 갖혀 살짝 떠오르는 효과를 위해 offset 적용
         _playerTransform.position += new Vector3(0f, _bubbleData.PlayerYOffset, 0f);
 
         //# 버블이 굴러가거나 했을 때, player도 같이 움직여야 하므로 parent에 추가
-        _playerTransform.SetParent(transform);
-
-        var originalScale = _playerTransform.lossyScale;
-
-        _parentScale = transform.localScale.x;
-
-        _playerTransform.localScale = originalScale / _parentScale;
-
-        //# 새로운 scale 적용
-        _growBubbleCoroutine = StartCoroutine(GrowBubble(_bubbleData.EncapsulateScale, _bubbleData.GrowDuration));
+        _playerTransform.SetParent(transform, true);
     }
 
     private IEnumerator DestroyBubble()
     {
         yield return _bubbleData.DestroyDelay;
 
-        if (_playerRigidbody != null)
+        if (_player != null)
         {
-            //# 버블이 굴러가거나 했을 때, player도 같이 움직여야 하므로 parent에 추가
-            _playerRigidbody.transform.SetParent(null);
-            _playerRigidbody.useGravity = true;
-            _playerRigidbody.isKinematic = false;
-            _playerRigidbody.velocity = Vector3.zero;
-            _playerRigidbody = null;
+            _player.OutBubble();
+            _player = null;
         }
 
         //# 추후 Object Pooling 적용 시 수정될 예정
@@ -113,7 +105,7 @@ public class Bubble : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private IEnumerator GrowBubble(float endScale, float growDuration)
+    private IEnumerator GrowBubble(float endScale, float growDuration, Transform objectTransform = null)
     {
         float time = 0f;
 
@@ -121,11 +113,13 @@ public class Bubble : MonoBehaviour
         {
             _parentScale = Mathf.Lerp(transform.localScale.x, endScale, time / growDuration);
 
+            transform.position = new Vector3(transform.position.x, _parentScale / 2, transform.position.z);
             transform.localScale = Vector3.one * _parentScale;
-            if (_playerTransform != null)
+
+            if (objectTransform != null)
             {
-                _playerTransform.localScale = Vector3.one / _parentScale;
-                _playerTransform.position = transform.position + new Vector3(0f, _bubbleData.PlayerYOffset, 0f);
+                objectTransform.localScale = Vector3.one / _parentScale;
+                objectTransform.position = transform.position + new Vector3(0f, _bubbleData.PlayerYOffset, 0f);
             }
 
             time += Time.deltaTime;

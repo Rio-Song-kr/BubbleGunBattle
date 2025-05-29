@@ -26,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_player.IsInBubble) return;
         UpdateMovement();
     }
 

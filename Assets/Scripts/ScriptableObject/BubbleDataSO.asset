@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afe8bfc7a1402364f875f2ae0fe2e7c6, type: 3}
   m_Name: BubbleDataSO
   m_EditorClassIdentifier: 
-  Force: 15
+  Force: 10
   GrowDuration: 0.5
   StartScale: 0.1
   EndScale: 2
