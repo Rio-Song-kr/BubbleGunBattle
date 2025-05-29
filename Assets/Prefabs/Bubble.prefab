@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4839805660211682647}
   - component: {fileID: 7970000880547627104}
   - component: {fileID: 6963006206615389478}
-  - component: {fileID: 7856169189875032321}
+  - component: {fileID: -2469568213877091865}
   - component: {fileID: 5591535509277551819}
   m_Layer: 0
   m_Name: Bubble
@@ -107,7 +107,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &7856169189875032321
+--- !u!54 &-2469568213877091865
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -146,4 +146,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af841e86ca97b7046b5fe2087e109225, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _force: 10
+  _bubbleData: {fileID: 11400000, guid: af2b4123d07601c4d8662dbbc3439b0c, type: 2}
