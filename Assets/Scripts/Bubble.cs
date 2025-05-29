@@ -57,12 +57,11 @@ public class Bubble : MonoBehaviour
 
         //# 기존 endScale off
         StopCoroutine(_growBubbleCoroutine);
-
         _detector.PlayerFound -= FindPlayer;
 
         //# 버블이 Player를 감싸기 위한 코드
         //# 버블의 position 중 y축은 기존 위치를 유지하고, 나머지는 player의 position을 사용하여 이동
-        var position = _playerTransform.position;
+        var position = playerTransform.position;
         position.y = transform.position.y;
         transform.position = position;
 
