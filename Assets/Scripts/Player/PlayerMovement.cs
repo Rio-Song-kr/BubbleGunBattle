@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Move Settings")]
     [SerializeField] private float _playerMoveSpeed;
+    [SerializeField] private Transform _avatar;
 
     private Player _player;
     private Vector2 _moveInput;
@@ -30,12 +31,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Move();
+        UpdateMovement();
     }
 
-    private void Move()
+    private void UpdateMovement()
     {
-        var moveDirection = _moveInput.y * Vector3.forward + _moveInput.x * Vector3.right;
+        var moveDirection = _moveInput.y * transform.forward + _moveInput.x * transform.right;
 
         _player.Rigid.MovePosition(_player.Rigid.position + _playerMoveSpeed * Time.deltaTime * moveDirection.normalized);
     }

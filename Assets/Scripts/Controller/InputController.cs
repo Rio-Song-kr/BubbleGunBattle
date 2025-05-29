@@ -12,7 +12,7 @@ public class InputController : MonoBehaviour
     //# 이벤트
     public event Action<Vector2> OnMove;
     public event Action<bool> OnFire;
-    public event Action<float> OnRotate;
+    public event Action<Vector2> OnRotate;
 
     //# 각 Input Action을 참조할 필드
     private InputAction _move;
@@ -72,6 +72,6 @@ public class InputController : MonoBehaviour
     private void OnFirePerformed(InputAction.CallbackContext ctx) => OnFire?.Invoke(true);
     private void OnFireCanceled(InputAction.CallbackContext ctx) => OnFire?.Invoke(false);
 
-    private void OnRotatePerformed(InputAction.CallbackContext ctx) => OnRotate?.Invoke(ctx.ReadValue<float>());
-    private void OnRotateCanceled(InputAction.CallbackContext ctx) => OnRotate?.Invoke(0.0f);
+    private void OnRotatePerformed(InputAction.CallbackContext ctx) => OnRotate?.Invoke(ctx.ReadValue<Vector2>());
+    private void OnRotateCanceled(InputAction.CallbackContext ctx) => OnRotate?.Invoke(Vector2.zero);
 }

@@ -27,7 +27,7 @@
                     "name": "Rotate",
                     "type": "Value",
                     "id": "83298885-6428-44dd-bdc9-65e05e1b724d",
-                    "expectedControlType": "",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -125,7 +125,7 @@
                 {
                     "name": "",
                     "id": "41923509-4b33-44b3-a009-57c06e65aa7c",
-                    "path": "<Mouse>/delta/x",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": ";PC",
@@ -136,7 +136,7 @@
                 {
                     "name": "",
                     "id": "87d76e80-74cf-47e4-94fd-b1a0c507a6d3",
-                    "path": "<Gamepad>/rightStick/y",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
                     "groups": ";PC",
