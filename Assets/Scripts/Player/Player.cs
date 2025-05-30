@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 {
     public InputController Input;
     public Rigidbody Rigid;
@@ -41,5 +41,22 @@ public class Player : MonoBehaviour
         _collider.enabled = true;
 
         IsInBubble = false;
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        transform.position = position;
+    }
+
+    public Vector3 GetPosition() => transform.position;
+
+    public void SetLocalScale(Vector3 localScale)
+    {
+        transform.localScale = localScale;
+    }
+
+    public void SetParent(Transform parent, bool worldPositionStays = true)
+    {
+        transform.SetParent(parent, worldPositionStays);
     }
 }

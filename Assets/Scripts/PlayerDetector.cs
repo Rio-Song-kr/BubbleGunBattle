@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerDetector : MonoBehaviour
 {
-    public event Action<bool, Transform> PlayerFound;
+    public event Action<bool, GameObject> PlayerFound;
 
     private SphereCollider _collider;
 
@@ -16,7 +16,7 @@ public class PlayerDetector : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PlayerFound?.Invoke(true, other.transform);
+            PlayerFound?.Invoke(true, other.gameObject);
             _collider.isTrigger = false;
         }
     }

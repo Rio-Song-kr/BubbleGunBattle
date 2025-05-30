@@ -9,11 +9,11 @@ public class Bubble : MonoBehaviour
     private Rigidbody _rigidbody;
     private SphereCollider _collider;
 
-    private Transform _playerTransform;
-    private Player _player;
+    private ITransformAdjustable _objectTransform;
+    private IBubbleInteractable _objectInteractable;
 
     private Coroutine _growBubbleCoroutine;
-    private float _parentScale;
+    private Coroutine _destroyBubbleCoroutine;
 
     private void Awake()
     {
@@ -23,8 +23,8 @@ public class Bubble : MonoBehaviour
 
     private void OnEnable()
     {
-        _detector.PlayerFound -= FindPlayer;
-        _detector.PlayerFound += FindPlayer;
+        _detector.PlayerFound -= TrapObject;
+        _detector.PlayerFound += TrapObject;
 
         //# 시작 크기를 BubbleDataSO의 StartScale로 설정
         transform.localScale = Vector3.one * _bubbleData.StartScale;
@@ -34,7 +34,7 @@ public class Bubble : MonoBehaviour
 
     private void OnDisable()
     {
-        _detector.PlayerFound -= FindPlayer;
+        _detector.PlayerFound -= TrapObject;
     }
 
     private void Start()
@@ -43,7 +43,7 @@ public class Bubble : MonoBehaviour
         _growBubbleCoroutine = StartCoroutine(GrowBubble(_bubbleData.EndScale, _bubbleData.GrowDuration));
 
         //# 일정 시간 후 자동 파괴를 위한 코루틴
-        StartCoroutine(DestroyBubble());
+        _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.UnTrappedDestroyDelay));
     }
 
     private void Move()
@@ -51,51 +51,57 @@ public class Bubble : MonoBehaviour
         _rigidbody.AddForce(transform.forward * _bubbleData.Force, ForceMode.Impulse);
     }
 
-    private void FindPlayer(bool found, Transform playerTransform)
+    private void TrapObject(bool found, GameObject gameObject)
     {
         if (!found) return;
 
         //# 기존 endScale off
         StopCoroutine(_growBubbleCoroutine);
-        _detector.PlayerFound -= FindPlayer;
+        StopCoroutine(_destroyBubbleCoroutine);
+
+        _detector.PlayerFound -= TrapObject;
+
+        _objectTransform = gameObject.GetComponent<ITransformAdjustable>();
+        _objectInteractable = gameObject.GetComponent<IBubbleInteractable>();
 
         //# 버블이 Player를 감싸기 위한 코드
         //# 버블의 position 중 y축은 기존 위치를 유지하고, 나머지는 player의 position을 사용하여 이동
-        var position = playerTransform.position;
+        var position = _objectTransform.GetPosition();
         position.y = transform.position.y;
         transform.position = position;
 
         //# 버블을 맞은 플레이어 설정
-        SetPlayerInBubble(playerTransform);
+        SetObjectInBubble();
 
         //# 새로운 scale 적용
         _growBubbleCoroutine =
-            StartCoroutine(GrowBubble(_bubbleData.EncapsulateScale, _bubbleData.GrowDuration, _playerTransform));
+            StartCoroutine(GrowBubble(_bubbleData.EncapsulateScale, _bubbleData.GrowDuration));
+
+        //# 일정 시간 후 자동 파괴를 위한 코루틴
+        _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
     }
 
-    private void SetPlayerInBubble(Transform playerTransform)
+    private void SetObjectInBubble()
     {
-        _playerTransform = playerTransform;
-        _player = _playerTransform.GetComponent<Player>();
-
         //# 플레이어가 갖혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
-        _player.InBubble();
+        _objectInteractable.InBubble();
 
         //# player가 버블에 갖혀 살짝 떠오르는 효과를 위해 offset 적용
-        _playerTransform.position += new Vector3(0f, _bubbleData.PlayerYOffset, 0f);
+        _objectTransform.SetPosition(_objectTransform.GetPosition() + new Vector3(0f, _bubbleData.PlayerYOffset, 0f));
 
         //# 버블이 굴러가거나 했을 때, player도 같이 움직여야 하므로 parent에 추가
-        _playerTransform.SetParent(transform, true);
+        _objectTransform.SetParent(transform);
     }
 
-    private IEnumerator DestroyBubble()
+    private IEnumerator DestroyBubble(WaitForSeconds destroyDelay)
     {
-        yield return _bubbleData.DestroyDelay;
+        yield return destroyDelay;
 
-        if (_player != null)
+        if (_objectInteractable != null)
         {
-            _player.OutBubble();
-            _player = null;
+            _objectInteractable.OutBubble();
+            _objectInteractable = null;
+            _objectTransform = null;
         }
 
         //# 추후 Object Pooling 적용 시 수정될 예정
@@ -104,24 +110,32 @@ public class Bubble : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private IEnumerator GrowBubble(float endScale, float growDuration, Transform objectTransform = null)
+    private IEnumerator GrowBubble(float endScale, float growDuration)
     {
         float time = 0f;
+        float prevScale = 0f;
 
         while (time < growDuration)
         {
-            _parentScale = Mathf.Lerp(transform.localScale.x, endScale, time / growDuration);
+            float parentScale = Mathf.Lerp(transform.localScale.x, endScale, time / growDuration);
 
-            transform.position = new Vector3(transform.position.x, _parentScale / 2, transform.position.z);
-            transform.localScale = Vector3.one * _parentScale;
+            transform.position += new Vector3(0, (parentScale - prevScale) / 20, 0);
+            transform.localScale = Vector3.one * parentScale;
 
-            if (objectTransform != null)
+            if (_objectTransform != null)
             {
-                objectTransform.localScale = Vector3.one / _parentScale;
-                objectTransform.position = transform.position + new Vector3(0f, _bubbleData.PlayerYOffset, 0f);
+                _objectTransform.SetLocalScale(Vector3.one / parentScale);
+                var position = _objectTransform.GetPosition();
+                _objectTransform.SetPosition(
+                    new Vector3(
+                        position.x,
+                        parentScale / 2 + _bubbleData.PlayerYOffset,
+                        position.z
+                    ));
             }
 
             time += Time.deltaTime;
+            prevScale = parentScale;
 
             yield return null;
         }
