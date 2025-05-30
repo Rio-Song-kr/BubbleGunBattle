@@ -4,7 +4,7 @@ using UnityEngine;
 public class Bubble : MonoBehaviour
 {
     [SerializeField] private BubbleDataSO _bubbleData;
-    [SerializeField] private PlayerDetector _detector;
+    [SerializeField] private ObjectDetector _detector;
 
     private Rigidbody _rigidbody;
     private SphereCollider _collider;
@@ -23,8 +23,8 @@ public class Bubble : MonoBehaviour
 
     private void OnEnable()
     {
-        _detector.PlayerFound -= TrapObject;
-        _detector.PlayerFound += TrapObject;
+        _detector.ObjectFound -= TrapObject;
+        _detector.ObjectFound += TrapObject;
 
         //# 시작 크기를 BubbleDataSO의 StartScale로 설정
         transform.localScale = Vector3.one * _bubbleData.StartScale;
@@ -34,7 +34,7 @@ public class Bubble : MonoBehaviour
 
     private void OnDisable()
     {
-        _detector.PlayerFound -= TrapObject;
+        _detector.ObjectFound -= TrapObject;
     }
 
     private void Start()
@@ -65,17 +65,15 @@ public class Bubble : MonoBehaviour
         _rigidbody.AddForce(transform.forward * _bubbleData.Force, ForceMode.Impulse);
     }
 
-    private void TrapObject(bool found, GameObject gameObject)
+    private void TrapObject(GameObject gameObject, bool isItem)
     {
-        if (!found) return;
-
         //# 기존 endScale off
         StopCoroutine(_growBubbleCoroutine);
         StopCoroutine(_destroyBubbleCoroutine);
 
         _collider.enabled = false;
 
-        _detector.PlayerFound -= TrapObject;
+        _detector.ObjectFound -= TrapObject;
 
         _objectTransform = gameObject.GetComponent<ITransformAdjustable>();
         _objectInteractable = gameObject.GetComponent<IBubbleInteractable>();
@@ -97,7 +95,13 @@ public class Bubble : MonoBehaviour
         _rigidbody.drag *= _bubbleData.Drag;
 
         //# 일정 시간 후 자동 파괴를 위한 코루틴
-        _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
+        if (!isItem)
+            _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
+        else
+        {
+            _rigidbody.useGravity = true;
+            _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.ItemTrappedDestroyDelay));
+        }
     }
 
     private void SetObjectInBubble()
@@ -153,5 +157,15 @@ public class Bubble : MonoBehaviour
         }
 
         transform.localScale = Vector3.one * endScale;
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (!other.gameObject.CompareTag("Player")) return;
+
+        var playerDirection = (transform.position - other.gameObject.transform.position).normalized;
+
+        playerDirection.y = Mathf.Clamp(_rigidbody.velocity.y, -0.05f, 0.05f);
+        _rigidbody.AddForce(playerDirection * _bubbleData.Force, ForceMode.Impulse);
     }
 }
