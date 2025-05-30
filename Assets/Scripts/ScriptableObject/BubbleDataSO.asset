@@ -22,3 +22,4 @@ MonoBehaviour:
   PopEffectDuration: 1
   PlayerYOffset: -0.8
   Drag: 3
+  RollingMaterial: {fileID: 13400000, guid: 4e3a4b591dc948b4e84212fda52b1b2f, type: 2}
