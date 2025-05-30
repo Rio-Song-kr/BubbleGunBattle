@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Items : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
+public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 {
     private Rigidbody _rigidbody;
 
