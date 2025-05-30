@@ -39,6 +39,7 @@ public class PlayerRotation : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_player.IsInBubble) return;
         UpdateRotation();
     }
 
