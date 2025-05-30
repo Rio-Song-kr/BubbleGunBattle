@@ -4,6 +4,8 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Move Settings")]
     [SerializeField] private float _playerMoveSpeed;
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private float _groundCheckDistance;
 
     private Player _player;
     private Vector2 _moveInput;
@@ -36,7 +38,16 @@ public class PlayerMovement : MonoBehaviour
         moveDirection *= _playerMoveSpeed;
         moveDirection.y = _player.Rigid.velocity.y;
 
-        _player.Rigid.MovePosition(_player.Rigid.position + Time.deltaTime * moveDirection);
+        //# velocity로 Player를 움직일 때, 경사나 턱이 있을 경우, 날아가는 현상을 막기 위해 Ground Check
+        bool isGrounded =
+            Physics.Raycast(transform.position + new Vector3(0, 1f, 0f), Vector3.down, _groundCheckDistance, _groundLayer);
+
+        if (isGrounded)
+        {
+            moveDirection.y = 0f;
+        }
+
+        _player.Rigid.velocity = moveDirection;
     }
 
     private void GetMoveInput(Vector2 moveInput)
