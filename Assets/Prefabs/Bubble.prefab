@@ -66,6 +66,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b907e29f245fbff4580b8fa7668b2c65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _bubbleData: {fileID: 11400000, guid: af2b4123d07601c4d8662dbbc3439b0c, type: 2}
 --- !u!1 &3291231880289707109
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,7 +167,7 @@ SphereCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
