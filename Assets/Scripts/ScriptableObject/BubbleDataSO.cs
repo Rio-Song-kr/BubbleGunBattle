@@ -17,4 +17,6 @@ public class BubbleDataSO : ScriptableObject
     public float PopEffectDuration = 1f;
 
     public float PlayerYOffset = 0.3f;
+
+    public float Drag = 2f;
 }

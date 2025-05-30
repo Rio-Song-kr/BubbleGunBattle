@@ -50,6 +50,13 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 
     public Vector3 GetPosition() => transform.position;
 
+    public void SetLocalPosition(Vector3 position)
+    {
+        transform.position = position;
+    }
+
+    public Vector3 GetLocalPosition() => transform.localPosition;
+
     public void SetLocalScale(Vector3 localScale)
     {
         transform.localScale = localScale;
