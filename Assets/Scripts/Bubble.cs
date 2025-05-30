@@ -46,6 +46,20 @@ public class Bubble : MonoBehaviour
         _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.UnTrappedDestroyDelay));
     }
 
+    private void FixedUpdate()
+    {
+        if (_objectTransform != null)
+        {
+            var position = _objectTransform.GetPosition();
+            _objectTransform.SetPosition(
+                new Vector3(
+                    transform.position.x,
+                    transform.position.y + _bubbleData.PlayerYOffset,
+                    transform.position.z
+                ));
+        }
+    }
+
     private void Move()
     {
         _rigidbody.AddForce(transform.forward * _bubbleData.Force, ForceMode.Impulse);
@@ -58,6 +72,8 @@ public class Bubble : MonoBehaviour
         //# 기존 endScale off
         StopCoroutine(_growBubbleCoroutine);
         StopCoroutine(_destroyBubbleCoroutine);
+
+        _collider.enabled = false;
 
         _detector.PlayerFound -= TrapObject;
 
@@ -77,6 +93,9 @@ public class Bubble : MonoBehaviour
         _growBubbleCoroutine =
             StartCoroutine(GrowBubble(_bubbleData.EncapsulateScale, _bubbleData.GrowDuration));
 
+        //# 포획 시 공기 저항 증가
+        _rigidbody.drag *= _bubbleData.Drag;
+
         //# 일정 시간 후 자동 파괴를 위한 코루틴
         _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
     }
@@ -86,11 +105,11 @@ public class Bubble : MonoBehaviour
         //# 플레이어가 갖혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
         _objectInteractable.InBubble();
 
-        //# player가 버블에 갖혀 살짝 떠오르는 효과를 위해 offset 적용
-        _objectTransform.SetPosition(_objectTransform.GetPosition() + new Vector3(0f, _bubbleData.PlayerYOffset, 0f));
-
         //# 버블이 굴러가거나 했을 때, player도 같이 움직여야 하므로 parent에 추가
         _objectTransform.SetParent(transform);
+
+        //# player가 버블에 갖혀 살짝 떠오르는 효과를 위해 offset 적용
+        _objectTransform.SetPosition(_objectTransform.GetPosition() + new Vector3(0f, _bubbleData.PlayerYOffset, 0f));
     }
 
     private IEnumerator DestroyBubble(WaitForSeconds destroyDelay)
@@ -125,13 +144,6 @@ public class Bubble : MonoBehaviour
             if (_objectTransform != null)
             {
                 _objectTransform.SetLocalScale(Vector3.one / parentScale);
-                var position = _objectTransform.GetPosition();
-                _objectTransform.SetPosition(
-                    new Vector3(
-                        position.x,
-                        parentScale / 2 + _bubbleData.PlayerYOffset,
-                        position.z
-                    ));
             }
 
             time += Time.deltaTime;
