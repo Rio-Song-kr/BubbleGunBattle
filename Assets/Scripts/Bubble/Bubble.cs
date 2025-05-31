@@ -15,6 +15,8 @@ public class Bubble : MonoBehaviour
     private Coroutine _growBubbleCoroutine;
     private Coroutine _destroyBubbleCoroutine;
 
+    private bool _isItem;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -95,12 +97,15 @@ public class Bubble : MonoBehaviour
         _rigidbody.drag *= _bubbleData.Drag;
 
         //# 일정 시간 후 자동 파괴를 위한 코루틴
-        if (!isItem)
-            _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
-        else
+        if (isItem)
         {
+            _isItem = true;
             _rigidbody.useGravity = true;
             _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.ItemTrappedDestroyDelay));
+        }
+        else
+        {
+            _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
         }
     }
 
@@ -166,6 +171,13 @@ public class Bubble : MonoBehaviour
         var playerDirection = (transform.position - other.gameObject.transform.position).normalized;
 
         playerDirection.y = Mathf.Clamp(_rigidbody.velocity.y, -0.05f, 0.05f);
-        _rigidbody.AddForce(playerDirection * _bubbleData.Force, ForceMode.Impulse);
+        _rigidbody.AddForce(playerDirection * _bubbleData.Force / 2, ForceMode.Impulse);
+
+        //# 충격을 받으면 시간 재설정
+        if (_isItem)
+        {
+            StopCoroutine(_destroyBubbleCoroutine);
+            _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.ItemTrappedDestroyDelay));
+        }
     }
 }

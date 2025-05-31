@@ -47,6 +47,9 @@ public class PlayerMovement : MonoBehaviour
             moveDirection.y = 0f;
         }
 
+        //# 속도에 따라 위로 많이 뜨는 현상을 줄이기 위해 1f로 max는 제한
+        moveDirection.y = Mathf.Clamp(moveDirection.y, float.MinValue, 1f);
+
         _player.Rigid.velocity = moveDirection;
     }
 
