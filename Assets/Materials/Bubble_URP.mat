@@ -26,7 +26,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _BounceAmplitude: 0.892
-    - _BounceFrequency: 1.35
+    - _BounceFrequency: 1.75
     - _ColorShiftMode: 0
     - _ColorShiftNoise: 0.085
     - _ColorShiftNoiseScale: 1.64
@@ -40,6 +40,6 @@ Material:
     - _ColorShiftBand: {r: 0, g: 0, b: 0, a: 0}
     - _ColorShiftNoise: {r: 0.13, g: 0.458, b: 1.35, a: 0}
     - _ColorShiftPeak: {r: 0, g: 0, b: 0, a: 0}
-    - _MainColor: {r: 0.34763256, g: 0.50203204, b: 0.7924528, a: 0.5882353}
+    - _MainColor: {r: 0.5707547, g: 1, b: 1, a: 0.5882353}
     - _ScaleRange: {r: 0.5076104, g: 1.1655257, b: 15587, a: 0}
   m_BuildTextureStacks: []

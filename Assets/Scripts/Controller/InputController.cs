@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -58,11 +55,6 @@ public class InputController : MonoBehaviour
 
         _rotate.performed -= OnRotatePerformed;
         _rotate.canceled -= OnRotateCanceled;
-    }
-
-    private void Start()
-    {
-        Debug.Log($"[{Time.frameCount}] InputController Start Called");
     }
 
     //# 핸들러 메서드

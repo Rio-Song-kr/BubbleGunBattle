@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afe8bfc7a1402364f875f2ae0fe2e7c6, type: 3}
+  m_Name: BubbleDataSO
+  m_EditorClassIdentifier: 
+  BubbleShootForce: 12
+  ObjectPushForce: 5
+  GrowDuration: 0.5
+  StartScale: 0.1
+  EndScale: 2
+  PlayerEncapsulateScale: 3
+  ItemEncapsulateScale: 2.5
+  PopEffect: {fileID: 3027976759136843694, guid: d1ab269e38e9199489dc8aee32a227bf,
+    type: 3}
+  PopEffectDuration: 1
+  PlayerYOffset: -0.8
+  ItemYOffset: -0.5
+  Drag: 3
+  RollingMaterial: {fileID: 13400000, guid: 4e3a4b591dc948b4e84212fda52b1b2f, type: 2}
