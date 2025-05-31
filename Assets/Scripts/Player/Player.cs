@@ -19,7 +19,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 
     public void InBubble()
     {
-        //# 플레이어가 갖혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
+        //# 플레이어가 갇혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
         Rigid.useGravity = false;
         Rigid.isKinematic = true;
 

@@ -17,7 +17,7 @@ public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 
     public void InBubble()
     {
-        //# Item이 갖혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
+        //# Item이 갇혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
         _rigidbody.useGravity = false;
         _rigidbody.isKinematic = true;
 
