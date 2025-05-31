@@ -36,7 +36,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         Rigid.isKinematic = false;
         Rigid.velocity = Vector3.zero;
 
-        transform.rotation = Quaternion.Euler(new Vector3(0f, transform.rotation.y, 0f));
+        transform.rotation = Quaternion.Euler(new Vector3(0f, transform.eulerAngles.y, 0f));
 
         _collider.enabled = true;
 
