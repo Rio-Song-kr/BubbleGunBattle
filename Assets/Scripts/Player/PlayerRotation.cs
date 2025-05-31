@@ -8,8 +8,8 @@ using UnityEngine.Serialization;
 public class PlayerRotation : MonoBehaviour
 {
     [Header("Speed Settings")]
-    [SerializeField] [Range(1f, 10f)] private float _rotateSpeed;
-    [SerializeField] [Range(0.5f, 5f)] private float _pitchSpeed;
+    [SerializeField] [Range(1f, 360f)] private float _rotateSpeed;
+    [SerializeField] [Range(1f, 360f)] private float _pitchSpeed;
 
     [Header("Pitch Settings")]
     [SerializeField] private bool _pitchInverse;
@@ -43,22 +43,28 @@ public class PlayerRotation : MonoBehaviour
         UpdateRotation();
     }
 
+    private float _currentPitch;
+    private Vector2 _smoothedInput;
+    private float _inputSmoothSpeed = 10f;
+
     private void UpdateRotation()
     {
-        float turn = _rotateSpeed * _rotateInput.x;
-        _player.Rigid.rotation *= Quaternion.Euler(0f, turn, 0f);
+        _smoothedInput = Vector2.Lerp(_smoothedInput, _rotateInput, _inputSmoothSpeed * Time.deltaTime);
 
-        float currentPitch = _followTransform.localRotation.eulerAngles.x;
+        // Yaw 회전
+        float turn = _rotateSpeed * _inputSmoothSpeed * _smoothedInput.x * Time.deltaTime;
+        var targetYaw = _player.Rigid.rotation * Quaternion.Euler(0f, turn, 0f);
+        // _player.Rigid.rotation = Quaternion.Euler(_player.Rigid.rotation.x, targetYaw.eulerAngles.y, 0f);
+        _player.Rigid.rotation = Quaternion.Slerp(_player.transform.rotation, targetYaw, 0.1f);
 
-        if (currentPitch > 180f) currentPitch -= 360f;
+        // Pitch 회전
+        _currentPitch += _smoothedInput.y * _pitchSpeed * (_pitchInverse ? 1 : -1) * Time.deltaTime;
+        _currentPitch = Mathf.Clamp(_currentPitch, _minPitch, _maxPitch);
 
-        float pitch = Mathf.Clamp(
-            currentPitch + _rotateInput.y * _pitchSpeed * (_pitchInverse ? 1 : -1),
-            _minPitch,
-            _maxPitch
-        );
-
-        _followTransform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        var targetPitch = Quaternion.Euler(_currentPitch, 0f, 0f);
+        _followTransform.localRotation =
+            // Quaternion.Slerp(_followTransform.localRotation, targetPitch, Time.deltaTime * _pitchSpeed);
+            Quaternion.Slerp(_followTransform.localRotation, targetPitch, 0.1f);
     }
 
     private void GetRotateInput(Vector2 rotateInput)
