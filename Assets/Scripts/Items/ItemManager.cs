@@ -34,6 +34,8 @@ public class ItemManager : MonoBehaviour
     {
         foreach (var item in _items)
         {
+            if (item == null) return true;
+
             if (Vector3.Distance(item.transform.position, newPosition) < distance)
             {
                 return false;

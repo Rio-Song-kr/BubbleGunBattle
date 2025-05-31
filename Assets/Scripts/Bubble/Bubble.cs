@@ -15,6 +15,8 @@ public class Bubble : MonoBehaviour
     private Coroutine _growBubbleCoroutine;
     private Coroutine _destroyBubbleCoroutine;
 
+    private bool _isItem;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -69,7 +71,10 @@ public class Bubble : MonoBehaviour
     {
         //# 기존 endScale off
         StopCoroutine(_growBubbleCoroutine);
+        _growBubbleCoroutine = null;
+
         StopCoroutine(_destroyBubbleCoroutine);
+        _destroyBubbleCoroutine = null;
 
         _collider.enabled = false;
 
@@ -95,19 +100,22 @@ public class Bubble : MonoBehaviour
         _rigidbody.drag *= _bubbleData.Drag;
 
         //# 일정 시간 후 자동 파괴를 위한 코루틴
-        if (!isItem)
-            _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
-        else
+        if (isItem)
         {
+            _isItem = true;
             _rigidbody.useGravity = true;
             _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.ItemTrappedDestroyDelay));
+        }
+        else
+        {
+            _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.TrappedDestroyDelay));
         }
     }
 
     private void SetObjectInBubble()
     {
         //# 플레이어가 갖혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
-        _objectInteractable.InBubble();
+        _objectInteractable.TrapInBubble();
 
         //# 버블이 굴러가거나 했을 때, player도 같이 움직여야 하므로 parent에 추가
         _objectTransform.SetParent(transform);
@@ -122,7 +130,7 @@ public class Bubble : MonoBehaviour
 
         if (_objectInteractable != null)
         {
-            _objectInteractable.OutBubble();
+            _objectInteractable.PopBubble();
             _objectInteractable = null;
             _objectTransform = null;
         }
@@ -167,5 +175,19 @@ public class Bubble : MonoBehaviour
 
         playerDirection.y = Mathf.Clamp(_rigidbody.velocity.y, -0.05f, 0.05f);
         _rigidbody.AddForce(playerDirection * _bubbleData.Force, ForceMode.Impulse);
+
+        //# 충격을 받으면 시간 재설정
+        if (_isItem && _destroyBubbleCoroutine != null)
+        {
+            StopCoroutine(_destroyBubbleCoroutine);
+            _destroyBubbleCoroutine = null;
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        if (!other.gameObject.CompareTag("Player")) return;
+
+        _destroyBubbleCoroutine = StartCoroutine(DestroyBubble(_bubbleData.ItemTrappedDestroyDelay));
     }
 }

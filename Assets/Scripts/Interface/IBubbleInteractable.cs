@@ -2,6 +2,6 @@ using UnityEngine;
 
 public interface IBubbleInteractable
 {
-    public void InBubble();
-    public void OutBubble();
+    public void TrapInBubble();
+    public void PopBubble();
 }
