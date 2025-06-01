@@ -11,7 +11,8 @@ public class Goal : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Bubble"))
         {
-            Destroy(other.gameObject);
+            var bubble = other.gameObject.GetComponent<Bubble>();
+            bubble.Release();
             GameManager.Instance.AddScore(_score);
         }
     }

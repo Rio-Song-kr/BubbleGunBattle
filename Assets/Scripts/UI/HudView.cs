@@ -15,7 +15,7 @@ public class HudView : MonoBehaviour
 
     private void Awake()
     {
-        var childrenObjects = gameObject.GetComponentsInChildren<RectTransform>();
+        var childrenObjects = gameObject.GetComponentsInChildren<RectTransform>(true);
 
         foreach (var children in childrenObjects)
         {
