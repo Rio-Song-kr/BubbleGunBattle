@@ -35,47 +35,33 @@ public class PlayerMovement : MonoBehaviour
     private void UpdateMovement()
     {
         //# velocity로 Player를 움직일 때, 경사나 턱이 있을 경우, 날아가는 현상을 막기 위해 Ground Check
+        //# 플레이어의 기준 축이 바닥이기에 offset을 추가하여 origin 보정
         bool isGrounded =
-            Physics.Raycast(transform.position + new Vector3(0, 1f, 0f), Vector3.down, _groundCheckDistance, _groundLayer);
+            Physics.Raycast(transform.position + Vector3.up, Vector3.down, _groundCheckDistance, _groundLayer);
 
         var moveDirection = (_moveInput.y * transform.forward + _moveInput.x * transform.right).normalized;
         moveDirection *= _playerMoveSpeed;
 
+        //# 땅에 붙어서 움직일 때와 공중에서 떨어지는 상황에서 가하는 힘의 보정을 위한 변수
+        float forceMultiply;
+
         if (isGrounded)
         {
             moveDirection.y = 0f;
+            forceMultiply = 5f;
+        }
+        else
+        {
+            //# forceMultiply의 값이 크면 떨어지는 도중에 벽 등에 부딪히면 공중에서 멈추는 현상이 있음
+            //# 가해주는 힘을 감소시켜 벽 쪽으로 힘을 주더라도 계속 떨어질 수 있게 보정
+            forceMultiply = 1.5f;
         }
 
-        var moveOffset = moveDirection * Time.fixedDeltaTime;
-
-        // //# 충돌 검사
-        // if (_player.Rigid.SweepTest(moveOffset.normalized, out var hit, moveOffset.magnitude))
-        // {
-        //     //# 벽과 충돌했다면 슬라이딩
-        //     if (hit.collider.CompareTag("Background"))
-        //     {
-        //         //# 충돌한 경우, 슬라이딩을 위해 벽에 수직한 방향 제거
-        //         var slidingDirection = Vector3.ProjectOnPlane(moveOffset, hit.normal).normalized;
-        //
-        //         //# 슬라이딩 방향도 검사 후 막혔다면 이동하지 않음
-        //         if (_player.Rigid.SweepTest(slidingDirection, out var slideHit, moveOffset.magnitude)) return;
-        //
-        //         //# 충돌 안 했으면 슬라이딩 방향으로만 이동
-        //         _player.Rigid.MovePosition(_player.Rigid.position + slidingDirection * moveOffset.magnitude);
-        //
-        //         return;
-        //     }
-        // }
-        // //# 충돌을 안했거나 벽이 아니라면 원래 방향으로 이동
-        // _player.Rigid.MovePosition(_player.Rigid.position + moveOffset);
-
-        _player.Rigid.AddForce(moveOffset * 10, ForceMode.VelocityChange);
+        _player.Rigid.AddForce(forceMultiply * Time.fixedDeltaTime * moveDirection, ForceMode.VelocityChange);
 
         if (_moveInput == Vector2.zero)
         {
-            float yVelocity = 0f;
-            if (!isGrounded)
-                yVelocity = Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 2.5f);
+            float yVelocity = isGrounded ? 0f : Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 2.5f);
             _player.Rigid.velocity = new Vector3(0f, yVelocity, 0f);
         }
         else
