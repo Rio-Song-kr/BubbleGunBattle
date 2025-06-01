@@ -1,12 +1,46 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class HudView : MonoBehaviour
 {
-    [SerializeField] private TMP_Text _scoreText;
-    [SerializeField] private TMP_Text _timeText;
+    private GameObject _scorePanel;
+    private GameObject _timePanel;
+
+    private TMP_Text _scoreText;
+    private TMP_Text _timeText;
+
+    private void Awake()
+    {
+        var childrenObjects = gameObject.GetComponentsInChildren<RectTransform>();
+
+        foreach (var children in childrenObjects)
+        {
+            if (children.name.Equals("ScorePanel")) _scorePanel = children.gameObject;
+            else if (children.name.Equals("TimePanel")) _timePanel = children.gameObject;
+
+            if (_scorePanel != null && _timePanel != null) break;
+        }
+
+        Debug.Log($"{_scorePanel.name}, {_timePanel.name}");
+        _scoreText = _scorePanel.GetComponentInChildren<TMP_Text>();
+        _timeText = _timePanel.GetComponentInChildren<TMP_Text>();
+    }
+
+    private void OnEnable()
+    {
+        _scorePanel.SetActive(true);
+        _timePanel.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        _scorePanel.SetActive(false);
+        _timePanel.SetActive(false);
+    }
 
     public void SetScoreText(string playerName, int score)
     {
