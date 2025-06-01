@@ -1,5 +1,5 @@
 public interface ISettableScore
 {
-    public void AddScore(int score);
-    public void ResetScore();
+    public void AddScore(string playerName, int score);
+    public void SetScore(string playerName, int score);
 }
