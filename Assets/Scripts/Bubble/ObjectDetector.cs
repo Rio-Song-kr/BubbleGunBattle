@@ -19,14 +19,15 @@ public class ObjectDetector : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            ObjectFound?.Invoke(other.gameObject, false);
             _collider.isTrigger = false;
+
+            ObjectFound?.Invoke(other.gameObject, false);
         }
         else if (other.CompareTag("Item"))
         {
-            _collider.material = _bubbleData.RollingMaterial;
-            ObjectFound?.Invoke(other.gameObject, true);
+            gameObject.tag = "Bubble";
             _collider.isTrigger = false;
+            ObjectFound?.Invoke(other.gameObject, true);
         }
     }
 }

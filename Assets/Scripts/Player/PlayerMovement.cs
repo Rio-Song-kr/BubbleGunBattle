@@ -61,14 +61,14 @@ public class PlayerMovement : MonoBehaviour
 
         if (_moveInput == Vector2.zero)
         {
-            float yVelocity = isGrounded ? 0f : Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 2.5f);
+            float yVelocity = isGrounded ? 0f : Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 3f);
             _player.Rigid.velocity = new Vector3(0f, yVelocity, 0f);
         }
         else
         {
             _player.Rigid.velocity = new Vector3(
                 Mathf.Clamp(_player.Rigid.velocity.x, -_playerMoveSpeed, _playerMoveSpeed),
-                Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 2.5f),
+                Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 3f),
                 Mathf.Clamp(_player.Rigid.velocity.z, -_playerMoveSpeed, _playerMoveSpeed)
             );
         }
