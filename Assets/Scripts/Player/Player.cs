@@ -20,6 +20,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
     public void TrapInBubble()
     {
         //# 플레이어가 갇혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
+        Rigid.velocity = Vector3.zero;
         Rigid.useGravity = false;
         Rigid.isKinematic = true;
 
@@ -41,6 +42,10 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         _collider.enabled = true;
 
         IsInBubble = false;
+    }
+
+    public void DestroySelf()
+    {
     }
 
     public void SetPosition(Vector3 position) => transform.position = position;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ public class Bubble : MonoBehaviour
 
     private bool _isItem;
     private bool _hasObject;
+    private Vector3 _objectOffset;
 
     private void Awake()
     {
@@ -38,6 +40,15 @@ public class Bubble : MonoBehaviour
     private void OnDisable()
     {
         _detector.ObjectFound -= TrapObject;
+
+        if (_objectInteractable != null)
+        {
+            _objectInteractable.DestroySelf();
+        }
+
+        //# 추후 Object Pooling 적용 시 수정될 예정
+        var effect = Instantiate(_bubbleData.PopEffect, transform.position, transform.rotation);
+        Destroy(effect, _bubbleData.PopEffectDuration);
     }
 
     private void Start()
@@ -51,14 +62,9 @@ public class Bubble : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_objectTransform != null)
-        {
-            var position = _objectTransform.GetPosition();
-            if (_isItem)
-                _objectTransform.SetPosition(transform.position + new Vector3(0f, _bubbleData.ItemYOffset, 0f));
-            else
-                _objectTransform.SetPosition(transform.position + new Vector3(0f, _bubbleData.PlayerYOffset, 0f));
-        }
+        if (_objectTransform == null) return;
+
+        ApplyPositionOffsetToObject();
     }
 
     private void Move()
@@ -67,7 +73,7 @@ public class Bubble : MonoBehaviour
         _rigidbody.AddForce(transform.forward * _bubbleData.BubbleShootForce, ForceMode.Impulse);
     }
 
-    private void TrapObject(GameObject gameObject, bool isItem)
+    private void TrapObject(GameObject trappedObject, bool isItem)
     {
         //# 기존 endScale off
         StopCoroutine(_growBubbleCoroutine);
@@ -77,17 +83,18 @@ public class Bubble : MonoBehaviour
         _destroyBubbleCoroutine = null;
 
         _isItem = isItem;
+        _objectOffset = new Vector3(0f, _isItem ? _bubbleData.ItemYOffset : _bubbleData.PlayerYOffset, 0f);
 
-        _collider.enabled = false;
+        // _collider.enabled = false;
         _hasObject = true;
 
         _detector.ObjectFound -= TrapObject;
 
-        _objectTransform = gameObject.GetComponent<ITransformAdjustable>();
-        _objectInteractable = gameObject.GetComponent<IBubbleInteractable>();
+        _objectTransform = trappedObject.GetComponent<ITransformAdjustable>();
+        _objectInteractable = trappedObject.GetComponent<IBubbleInteractable>();
 
         //# 버블이 Object를 감싸기 위한 코드
-        //# 버블의 position 중 y축은 기존 위치를 유지하고, 나머지는 player의 position을 사용하여 이동
+        //# 버블의 position 중 y축은 기존 위치를 유지하고, 나머지는 object의 position을 사용하여 이동
         var position = _objectTransform.GetPosition();
         position.y = transform.position.y;
         transform.position = position;
@@ -121,14 +128,17 @@ public class Bubble : MonoBehaviour
         //# Object가 갇혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
         _objectInteractable.TrapInBubble();
 
-        //# Object가 굴러가거나 했을 때, player도 같이 움직여야 하므로 parent에 추가
-        _objectTransform.SetParent(transform);
 
         //# player가 버블에 갇혀 살짝 떠오르는 효과를 위해 offset 적용
-        if (_isItem)
-            _objectTransform.SetPosition(_objectTransform.GetPosition() + new Vector3(0f, _bubbleData.ItemYOffset, 0f));
-        else
-            _objectTransform.SetPosition(_objectTransform.GetPosition() + new Vector3(0f, _bubbleData.PlayerYOffset, 0f));
+        ApplyPositionOffsetToObject();
+
+        //# Object가 굴러가거나 했을 때, player도 같이 움직여야 하므로 parent에 추가
+        _objectTransform.SetParent(transform);
+    }
+
+    private void ApplyPositionOffsetToObject()
+    {
+        _objectTransform.SetPosition(transform.position + _objectOffset);
     }
 
     private IEnumerator DestroyBubble(WaitForSeconds destroyDelay)
@@ -142,9 +152,6 @@ public class Bubble : MonoBehaviour
             _objectTransform = null;
         }
 
-        //# 추후 Object Pooling 적용 시 수정될 예정
-        var effect = Instantiate(_bubbleData.PopEffect, transform.position, transform.rotation);
-        Destroy(effect, _bubbleData.PopEffectDuration);
         Destroy(gameObject);
     }
 
@@ -176,12 +183,28 @@ public class Bubble : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
+        if (_objectInteractable != null || _objectTransform != null) return;
+
+        if (other.gameObject.CompareTag("Player"))
+        {
+            TrapObject(other.gameObject, false);
+        }
+        else if (other.gameObject.CompareTag("Item"))
+        {
+            gameObject.tag = "Bubble";
+            _collider.material = _bubbleData.RollingMaterial;
+            TrapObject(other.gameObject, true);
+        }
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
         if (!other.gameObject.CompareTag("Player") || !_hasObject) return;
 
         var playerDirection = (transform.position - other.gameObject.transform.position).normalized;
 
         playerDirection.y = Mathf.Clamp(_rigidbody.velocity.y, -0.05f, 0.05f);
-        _rigidbody.AddForce(playerDirection * _bubbleData.ObjectPushForce, ForceMode.Impulse);
+        _rigidbody.AddForce(playerDirection * _bubbleData.ObjectPushForce, ForceMode.Force);
 
         //# 충격을 받으면 시간 재설정
         if (_isItem && _destroyBubbleCoroutine != null)

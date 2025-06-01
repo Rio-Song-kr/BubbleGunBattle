@@ -20,12 +20,13 @@ public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
     private void OnEnable()
     {
         //# 아이템 생성 시 포획이 되지 않는다면 일정 시간 뒤 파괴할 수 있게 Coroutine 시작
-        _destroyCoroutine = StartCoroutine(DestroyItem());
+        _destroyCoroutine = StartCoroutine(DestroyItemCoroutine());
     }
 
     public void TrapInBubble()
     {
         //# Item이 갇혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
+        _rigidbody.velocity = Vector3.zero;
         _rigidbody.useGravity = false;
         _rigidbody.isKinematic = true;
 
@@ -49,7 +50,7 @@ public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         _collider.enabled = true;
 
         //# Pop이 되었을 때, 다시 일정 시간 뒤 파괴될 수 있게 Coroutine 시작
-        _destroyCoroutine = StartCoroutine(DestroyItem());
+        _destroyCoroutine = StartCoroutine(DestroyItemCoroutine());
     }
 
     public void SetPosition(Vector3 position) => transform.position = position;
@@ -59,10 +60,20 @@ public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
     public void SetLocalScale(Vector3 localScale) => transform.localScale = localScale;
     public void SetParent(Transform parent, bool worldPositionStays = true) => transform.SetParent(parent, worldPositionStays);
 
-    private IEnumerator DestroyItem()
+    public void DestroySelf()
+    {
+        DestroyItem();
+    }
+
+    private IEnumerator DestroyItemCoroutine()
     {
         yield return _itemData.DestroyDelay;
 
+        DestroyItem();
+    }
+
+    private void DestroyItem()
+    {
         ItemManager.Instance.RemoveItem(gameObject);
         Destroy(gameObject);
     }
