@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -32,9 +31,9 @@ public class Bubble : MonoBehaviour
 
     private void OnDisable()
     {
-        //# 추후 Object Pooling 적용 시 수정될 예정
-        var effect = Instantiate(_bubbleData.PopEffect, transform.position, transform.rotation);
-        Destroy(effect, _bubbleData.PopEffectDuration);
+        var effect = BubblePopEffectPool.Instance.Pool.Get();
+        effect.transform.SetPositionAndRotation(transform.position, transform.rotation);
+        effect.Play();
     }
 
     public void Release()
