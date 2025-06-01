@@ -6,10 +6,13 @@ using UnityEngine;
 public class Target : MonoBehaviour
 {
     [SerializeField] private int _score;
+    private HudPresenter _hudPresenter;
 
-    private void OnEnable()
+    private void Start()
     {
-        _score = 0;
+        var hudGameObject = GameObject.FindWithTag("HUDCanvas");
+        _hudPresenter = hudGameObject.GetComponent<HudPresenter>();
+        Debug.Log(hudGameObject.name);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -17,8 +20,7 @@ public class Target : MonoBehaviour
         if (other.gameObject.CompareTag("Bubble"))
         {
             Destroy(other.gameObject);
-            _score++;
-            Debug.Log(_score);
+            _hudPresenter.IncreaseScore("Player", _score);
         }
     }
 }
