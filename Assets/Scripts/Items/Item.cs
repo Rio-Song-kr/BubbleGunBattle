@@ -4,10 +4,10 @@ using UnityEngine;
 public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 {
     [SerializeField] private ItemDataSO _itemData;
+    private ItemManager _itemManager;
 
     private Rigidbody _rigidbody;
     private Collider _collider;
-
     private Coroutine _destroyCoroutine;
 
     private void Awake()
@@ -20,6 +20,8 @@ public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
     {
         //# 아이템 생성 시 포획이 되지 않는다면 일정 시간 뒤 파괴할 수 있게 Coroutine 시작
         _destroyCoroutine = StartCoroutine(DestroyItemCoroutine());
+
+        _itemManager = GameManager.Instance.ItemManager;
     }
 
     public void TrapInBubble()
@@ -73,7 +75,7 @@ public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 
     private void DestroyItem()
     {
-        ItemManager.Instance.RemoveItem(gameObject);
+        _itemManager.RemoveItem(gameObject);
         Destroy(gameObject);
     }
 }

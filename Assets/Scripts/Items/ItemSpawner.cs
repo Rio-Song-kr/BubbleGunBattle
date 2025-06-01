@@ -12,6 +12,12 @@ public class ItemSpawner : MonoBehaviour
 
     private float _lastSpawnTime;
     private float _spawnTime;
+    private ItemManager _itemManager;
+
+    private void OnEnable()
+    {
+        _itemManager = GameManager.Instance.ItemManager;
+    }
 
     private void Start()
     {
@@ -37,7 +43,7 @@ public class ItemSpawner : MonoBehaviour
         var selectedItem = _items[Random.Range(0, _items.Length)];
         var item = Instantiate(selectedItem, spawnPosition, Quaternion.identity);
 
-        ItemManager.Instance.AddItem(item);
+        _itemManager.AddItem(item);
     }
 
     private Vector3 GetRandomPointOnNavMesh(float distance)
@@ -57,7 +63,7 @@ public class ItemSpawner : MonoBehaviour
             NavMesh.SamplePosition(randomPosition, out hit, distance, NavMesh.AllAreas);
 
             //# 기존에 생성된 아이템과의 거리를 확인하여 생성
-            if (ItemManager.Instance.CanCreate(hit.position, distance)) break;
+            if (_itemManager.CanCreate(hit.position, distance)) break;
             count++;
         }
         if (count >= 3)

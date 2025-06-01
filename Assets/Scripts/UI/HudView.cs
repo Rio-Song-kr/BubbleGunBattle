@@ -21,7 +21,6 @@ public class HudView : MonoBehaviour
             if (_scorePanel != null && _timePanel != null) break;
         }
 
-        Debug.Log($"{_scorePanel.name}, {_timePanel.name}");
         _scoreText = _scorePanel.GetComponentInChildren<TMP_Text>();
         _timeText = _timePanel.GetComponentInChildren<TMP_Text>();
     }

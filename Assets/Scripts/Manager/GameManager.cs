@@ -3,19 +3,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
+    public static GameManager Instance => _instance;
 
-    public static GameManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindObjectOfType<GameManager>();
-            }
-
-            return _instance;
-        }
-    }
+    public ItemManager ItemManager { get; private set; }
+    public InputManager Input { get; private set; }
 
     private ISettableScore _hudScore;
     private ISettableTime _hudTime;
@@ -26,12 +17,29 @@ public class GameManager : MonoBehaviour
     private bool _gameOver;
     private bool _isPaused;
 
-    private void Awake()
+    public static void CreateInstance()
+    {
+        if (_instance == null)
+        {
+            var gameManagerPrefab = Resources.Load<GameManager>("GameManager");
+            _instance = Instantiate(gameManagerPrefab);
+            DontDestroyOnLoad(_instance);
+        }
+    }
+
+    public static void ReleaseInstance()
     {
         if (_instance != null)
         {
-            Destroy(gameObject);
+            Destroy(_instance);
+            _instance = null;
         }
+    }
+
+    private void Awake()
+    {
+        ItemManager = GetComponent<ItemManager>();
+        Input = GetComponent<InputManager>();
     }
 
     private void OnEnable()

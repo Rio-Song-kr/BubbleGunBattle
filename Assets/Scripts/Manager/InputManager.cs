@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class InputController : MonoBehaviour
+public class InputManager : MonoBehaviour
 {
     [SerializeField] private InputActionAsset _inputActions;
 

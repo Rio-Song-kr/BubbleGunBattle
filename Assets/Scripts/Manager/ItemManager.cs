@@ -3,22 +3,7 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
-    private static ItemManager _instance;
-    public static ItemManager Instance => _instance;
-
     private List<GameObject> _items = new List<GameObject>();
-
-    public ItemManager()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
 
     public void AddItem(GameObject item)
     {
