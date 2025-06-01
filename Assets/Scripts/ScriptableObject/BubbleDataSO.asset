@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BubbleDataSO
   m_EditorClassIdentifier: 
   BubbleShootForce: 12
-  ObjectPushForce: 5
+  ObjectPushForce: 3
   GrowDuration: 0.5
   StartScale: 0.1
   EndScale: 2
