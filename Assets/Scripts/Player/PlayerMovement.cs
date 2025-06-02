@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -6,12 +7,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _playerMoveSpeed;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _groundCheckDistance;
+    [SerializeField] private float _deceleration = 0.91f;
 
     private Player _player;
     private Vector2 _moveInput;
     private float _smoothInputX;
     private float _smoothInputZ;
+    private float _latestVelocityY = 0f;
+
     private bool _isFirstZero = true;
+    private bool _isFalling = false;
+    private bool _canMove = true;
+
+    private WaitForSeconds _wait = new WaitForSeconds(0.5f);
 
     private void Awake()
     {
@@ -31,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player.IsInBubble) return;
+        if (_player.IsInBubble || !_canMove) return;
         UpdateMovement();
     }
 
@@ -48,16 +56,31 @@ public class PlayerMovement : MonoBehaviour
         //# 땅에 붙어서 움직일 때와 공중에서 떨어지는 상황에서 가하는 힘의 보정을 위한 변수
         float forceMultiply;
 
+        //# forceMultiply의 값이 크면 떨어지는 도중에 벽 등에 부딪히면 공중에서 멈추는 현상이 있음
+        //# 가해주는 힘을 감소시켜 벽 쪽으로 힘을 주더라도 계속 떨어질 수 있게 보정
         if (isGrounded)
         {
             moveDirection.y = 0f;
             forceMultiply = 5f;
+
+            if (_isFalling && _latestVelocityY < -4.9f)
+            {
+                _isFalling = false;
+                _player.Ani.SetFallState();
+                _canMove = false;
+                _player.Rigid.velocity = Vector3.zero;
+                StartCoroutine(BlockMoveCoroutine());
+            }
         }
         else
         {
-            //# forceMultiply의 값이 크면 떨어지는 도중에 벽 등에 부딪히면 공중에서 멈추는 현상이 있음
-            //# 가해주는 힘을 감소시켜 벽 쪽으로 힘을 주더라도 계속 떨어질 수 있게 보정
-            forceMultiply = 1.5f;
+            //# 허공에서 x, z 움직이는 속도를 지속적으로 감속
+            forceMultiply = 2f;
+            _isFalling = true;
+            var velocity = _player.Rigid.velocity;
+            velocity.x *= _deceleration;
+            velocity.z *= _deceleration;
+            _player.Rigid.velocity = velocity;
         }
 
         _player.Rigid.AddForce(forceMultiply * Time.fixedDeltaTime * moveDirection, ForceMode.VelocityChange);
@@ -87,6 +110,9 @@ public class PlayerMovement : MonoBehaviour
             );
         }
 
+        _latestVelocityY = _player.Rigid.velocity.y;
+
+        // Debug.Log(_latestVelocityY);
         //# Velocity의 값을 실제 0 ~ 1 사이로 normalize
         var move = transform.InverseTransformDirection(_player.Rigid.velocity) / _playerMoveSpeed;
 
@@ -94,4 +120,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void GetMoveInput(Vector2 moveInput) => _moveInput = moveInput;
+
+    private IEnumerator BlockMoveCoroutine()
+    {
+        yield return _wait;
+        _canMove = true;
+    }
 }

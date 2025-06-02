@@ -29,6 +29,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         _collider.enabled = false;
 
         IsInBubble = true;
+        Ani.SetBalloonFishState(IsInBubble);
     }
 
     public void PopBubble()
@@ -44,6 +45,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         _collider.enabled = true;
 
         IsInBubble = false;
+        Ani.SetBalloonFishState(IsInBubble);
     }
 
     public void ReleaseToPool()

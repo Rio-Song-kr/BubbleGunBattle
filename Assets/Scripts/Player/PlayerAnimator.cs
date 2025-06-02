@@ -8,6 +8,8 @@ public class PlayerAnimator : MonoBehaviour
     private Animator _animator;
     private readonly int _hashMoveX = Animator.StringToHash("MoveX");
     private readonly int _hashMoveZ = Animator.StringToHash("MoveZ");
+    private readonly int _hashIsFalling = Animator.StringToHash("IsFalling");
+    private readonly int _hashIsInBubble = Animator.StringToHash("IsInBubble");
 
     private void Awake() => _animator = GetComponent<Animator>();
 
@@ -16,4 +18,7 @@ public class PlayerAnimator : MonoBehaviour
         _animator.SetFloat(_hashMoveX, moveX);
         _animator.SetFloat(_hashMoveZ, moveZ);
     }
+
+    public void SetFallState() => _animator.SetTrigger(_hashIsFalling);
+    public void SetBalloonFishState(bool value) => _animator.SetBool(_hashIsInBubble, value);
 }
