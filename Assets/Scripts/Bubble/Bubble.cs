@@ -89,8 +89,8 @@ public class Bubble : MonoBehaviour
     private void TrapObject(GameObject trappedObject, bool isItem)
     {
         //# 기존 endScale off
-        StopCoroutine(_growBubbleCoroutine);
-        StopCoroutine(_releaseBubbleCoroutine);
+        if (_growBubbleCoroutine != null) StopCoroutine(_growBubbleCoroutine);
+        if (_releaseBubbleCoroutine != null) StopCoroutine(_releaseBubbleCoroutine);
         _growBubbleCoroutine = _releaseBubbleCoroutine = null;
 
         _isItem = isItem;
@@ -218,7 +218,7 @@ public class Bubble : MonoBehaviour
     {
         if (!other.gameObject.CompareTag("Player")) return;
 
-        if (gameObject == null) return;
+        if (!gameObject.activeSelf) return;
         _releaseBubbleCoroutine = StartCoroutine(ReleaseBubble(_bubbleData.ItemTrappedReleaseDelay));
     }
 }
