@@ -75,6 +75,8 @@ public class Item : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 
     private void ReleaseItem()
     {
+        gameObject.transform.parent = null;
+        PopBubble();
         _itemManager.RemoveItem(this);
 
         _itemData.Spawner.ItemsPool[ReturnPoolIndex].Pool.Release(this);

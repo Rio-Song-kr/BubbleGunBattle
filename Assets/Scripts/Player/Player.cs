@@ -4,6 +4,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 {
     public InputManager Input;
     public Rigidbody Rigid;
+    public PlayerAnimator Ani;
 
     public bool IsInBubble = false;
 
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         Rigid = GetComponent<Rigidbody>();
 
         _collider = GetComponent<CapsuleCollider>();
+        Ani = GetComponent<PlayerAnimator>();
     }
 
     public void TrapInBubble()
@@ -27,6 +29,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         _collider.enabled = false;
 
         IsInBubble = true;
+        Ani.SetBalloonFishState(IsInBubble);
     }
 
     public void PopBubble()
@@ -42,6 +45,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         _collider.enabled = true;
 
         IsInBubble = false;
+        Ani.SetBalloonFishState(IsInBubble);
     }
 
     public void ReleaseToPool()

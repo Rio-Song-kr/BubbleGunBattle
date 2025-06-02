@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 public class Bubble : MonoBehaviour
 {
@@ -87,8 +89,8 @@ public class Bubble : MonoBehaviour
     private void TrapObject(GameObject trappedObject, bool isItem)
     {
         //# 기존 endScale off
-        StopCoroutine(_growBubbleCoroutine);
-        StopCoroutine(_releaseBubbleCoroutine);
+        if (_growBubbleCoroutine != null) StopCoroutine(_growBubbleCoroutine);
+        if (_releaseBubbleCoroutine != null) StopCoroutine(_releaseBubbleCoroutine);
         _growBubbleCoroutine = _releaseBubbleCoroutine = null;
 
         _isItem = isItem;
@@ -204,11 +206,6 @@ public class Bubble : MonoBehaviour
     {
         if (!other.gameObject.CompareTag("Player") || !_hasObject) return;
 
-        var objectDirection = (transform.position - other.gameObject.transform.position).normalized;
-        objectDirection.y = Mathf.Clamp(_rigidbody.velocity.y, -0.05f, 0.05f);
-
-        ApplyForce(objectDirection * _bubbleData.ObjectPushForce, ForceMode.Force);
-
         //# CollisionStay 동안은 release Coroutine 중지
         if (_isItem && _releaseBubbleCoroutine != null)
         {
@@ -221,6 +218,7 @@ public class Bubble : MonoBehaviour
     {
         if (!other.gameObject.CompareTag("Player")) return;
 
+        if (!gameObject.activeSelf) return;
         _releaseBubbleCoroutine = StartCoroutine(ReleaseBubble(_bubbleData.ItemTrappedReleaseDelay));
     }
 }
