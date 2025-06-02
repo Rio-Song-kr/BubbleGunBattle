@@ -977,9 +977,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _items:
-  - {fileID: 3306776358836982081, guid: 881a8f1a1e15a0b47ad813669d5725c9, type: 3}
-  - {fileID: 3306776358836982081, guid: cfb532f6cf8b1d840840e582da02f596, type: 3}
-  - {fileID: 3306776358836982081, guid: 35b651a1c9cc0974e9066e916dc74b75, type: 3}
+  - {fileID: 7765582770196891437, guid: 82905cfd8065cdb45a5810e60a389aec, type: 3}
+  - {fileID: 5859906266816985191, guid: 850b2ba097cbb674292443b3b17f65e7, type: 3}
+  - {fileID: 7981131327015963582, guid: 0828316f1ccadf142b34bc7bfcd21774, type: 3}
+  - {fileID: 1496701227739015696, guid: 1c4527870883e374fbc005e65780f57a, type: 3}
+  - {fileID: 8498258459589646974, guid: bdd50e37f9c58ad49916dc9dad4b34f7, type: 3}
   _spawnMaxTime: 0.5
   _spawnMinTime: 3
   _minBackgroundSize: {x: -24, y: -24}
@@ -1190,7 +1192,7 @@ MonoBehaviour:
   _groundLayer:
     serializedVersion: 2
     m_Bits: 2048
-  _groundCheckDistance: 1.8
+  _groundCheckDistance: 1.2
   _deceleration: 0.91
 --- !u!114 &2138885274
 MonoBehaviour:
