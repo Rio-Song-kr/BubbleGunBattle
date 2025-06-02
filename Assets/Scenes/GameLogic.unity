@@ -500,75 +500,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0597d27924ce7db4981a5a1790ddcf6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &689584063
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3306776358836982081, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_Name
-      value: Item
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3502536254369326300, guid: 881a8f1a1e15a0b47ad813669d5725c9,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 720060009065641476, guid: 881a8f1a1e15a0b47ad813669d5725c9, type: 3}
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 881a8f1a1e15a0b47ad813669d5725c9, type: 3}
 --- !u!1 &693657004
 GameObject:
   m_ObjectHideFlags: 0
@@ -1471,7 +1402,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _items:
   - {fileID: 3306776358836982081, guid: 881a8f1a1e15a0b47ad813669d5725c9, type: 3}
-  _spawnMaxTime: 1
+  - {fileID: 3306776358836982081, guid: cfb532f6cf8b1d840840e582da02f596, type: 3}
+  - {fileID: 3306776358836982081, guid: 35b651a1c9cc0974e9066e916dc74b75, type: 3}
+  _spawnMaxTime: 0.5
   _spawnMinTime: 3
   _minBackgroundSize: {x: -24, y: -24}
   _maxBackgroundSize: {x: 24, y: 24}
@@ -1794,4 +1727,3 @@ SceneRoots:
   - {fileID: 1732032769}
   - {fileID: 1174084213}
   - {fileID: 237184186}
-  - {fileID: 689584063}

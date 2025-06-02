@@ -13,10 +13,19 @@ public class ItemSpawner : MonoBehaviour
     private float _lastSpawnTime;
     private float _spawnTime;
     private ItemManager _itemManager;
+    private ItemPool<Item>[] _itemsPool;
+    public ItemPool<Item>[] ItemsPool => _itemsPool;
 
     private void OnEnable()
     {
         _itemManager = GameManager.Instance.ItemManager;
+        _itemsPool = new ItemPool<Item>[_items.Length];
+
+        for (int i = 0; i < _items.Length; i++)
+        {
+            _itemsPool[i] = new ItemPool<Item>();
+            _itemsPool[i].SetPool(_items[i]);
+        }
     }
 
     private void Start()
@@ -39,9 +48,13 @@ public class ItemSpawner : MonoBehaviour
         var spawnPosition = GetRandomPointOnNavMesh(_itemDistance);
         spawnPosition += Vector3.up * 0.5f;
 
-        //# 아이템 중 하나를 무작위로 생성
-        var selectedItem = _items[Random.Range(0, _items.Length)];
-        var item = Instantiate(selectedItem, spawnPosition, Quaternion.identity);
+        //# 여러 ItemPool 중 하나를 선택하여 무작위로 생성
+        int index = Random.Range(0, _items.Length);
+        var selectedItemPool = _itemsPool[index];
+        var item = selectedItemPool.Pool.Get();
+
+        item.ReturnPoolIndex = index;
+        item.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
 
         _itemManager.AddItem(item);
     }
@@ -51,7 +64,7 @@ public class ItemSpawner : MonoBehaviour
         NavMeshHit hit = default;
         int count = 0;
 
-        while (count < 3)
+        while (count < 5)
         {
             var randomPosition = new Vector3(
                 Random.Range(_minBackgroundSize.x, _maxBackgroundSize.x),
@@ -66,10 +79,8 @@ public class ItemSpawner : MonoBehaviour
             if (_itemManager.CanCreate(hit.position, distance)) break;
             count++;
         }
-        if (count >= 3)
-        {
-            return Vector3.zero;
-        }
+
+        //# 생성할 아이템 위치가 5번 반복할 때까지 기존 위치와 일정 거리 이상 차이가 나지 않으면 그냥 생성
         return hit.position;
     }
 }

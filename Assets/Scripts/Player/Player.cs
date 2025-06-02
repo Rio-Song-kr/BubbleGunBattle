@@ -44,7 +44,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         IsInBubble = false;
     }
 
-    public void DestroySelf()
+    public void ReleaseToPool()
     {
     }
 

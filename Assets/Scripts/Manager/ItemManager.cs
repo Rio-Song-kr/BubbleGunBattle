@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
-    private List<GameObject> _items = new List<GameObject>();
+    private List<Item> _items = new List<Item>();
 
-    public void AddItem(GameObject item)
+    public void AddItem(Item item)
     {
         _items.Add(item);
     }
 
-    public void RemoveItem(GameObject item)
+    public void RemoveItem(Item item)
     {
         _items.Remove(item);
     }

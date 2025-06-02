@@ -38,7 +38,7 @@ public class Bubble : MonoBehaviour
 
     public void Release()
     {
-        if (_objectInteractable != null) _objectInteractable.DestroySelf();
+        if (_objectInteractable != null) _objectInteractable.ReleaseToPool();
 
         InitFields();
 

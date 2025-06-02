@@ -2,5 +2,5 @@ public interface IBubbleInteractable
 {
     public void TrapInBubble();
     public void PopBubble();
-    public void DestroySelf();
+    public void ReleaseToPool();
 }
