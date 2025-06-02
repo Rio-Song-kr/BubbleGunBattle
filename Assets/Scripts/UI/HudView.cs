@@ -25,22 +25,7 @@ public class HudView : MonoBehaviour
         _timeText = _timePanel.GetComponentInChildren<TMP_Text>();
     }
 
-    private void OnEnable()
-    {
-        _scorePanel.SetActive(true);
-        _timePanel.SetActive(true);
-    }
-
-    private void OnDisable()
-    {
-        _scorePanel.SetActive(false);
-        _timePanel.SetActive(false);
-    }
-
-    public void SetScoreText(string playerName, int score)
-    {
-        _scoreText.text = $"{playerName} : {score}";
-    }
+    public void SetScoreText(string playerName, int score) => _scoreText.text = $"{playerName} : {score}";
 
     public void SetTimeText(float time)
     {

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -7,15 +8,42 @@ public class GameManager : MonoBehaviour
 
     public ItemManager ItemManager { get; private set; }
     public InputManager Input { get; private set; }
+    public GlobalUIManager UI { get; private set; }
+    public MySceneManager Scene { get; private set; }
 
-    private ISettableScore _hudScore;
-    private ISettableTime _hudTime;
+    // private ISettableScore _hudScore;
+    // private ISettableTime _hudTime;
+
     // private readonly float _defaultTime = 300f;
     [SerializeField] private float _defaultTime = 10;
+
     private float _timeRemaining;
     private float _prevTime;
     private bool _gameOver;
     private bool _isPaused;
+    private bool _isFirstChange;
+
+    private bool _isTitle = true;
+
+    public bool IsTitle
+    {
+        get => _isTitle;
+        set
+        {
+            _isTitle = value;
+
+            if (!_isTitle)
+            {
+                OnScoreAdded?.Invoke(PlayerName, 0);
+                OnTimeChanged?.Invoke(_defaultTime);
+            }
+        }
+    }
+
+    public Action<float> OnTimeChanged;
+    public Action<string, int> OnScoreAdded;
+
+    public string PlayerName { get; private set; }
 
     public static void CreateInstance()
     {
@@ -40,6 +68,8 @@ public class GameManager : MonoBehaviour
     {
         ItemManager = GetComponent<ItemManager>();
         Input = GetComponent<InputManager>();
+        UI = GetComponent<GlobalUIManager>();
+        Scene = GetComponent<MySceneManager>();
     }
 
     private void OnEnable()
@@ -51,25 +81,15 @@ public class GameManager : MonoBehaviour
         _isPaused = false;
     }
 
-    private void Start()
-    {
-        var hudGameObject = GameObject.FindWithTag("HUDCanvas");
-        _hudTime = hudGameObject.GetComponent<ISettableTime>();
-        _hudScore = hudGameObject.GetComponent<ISettableScore>();
-
-        _hudTime.SetTime(_defaultTime);
-        _hudScore.SetScore("Player", 0);
-    }
-
     private void Update()
     {
-        if (_gameOver || _isPaused) return;
+        if (IsTitle || _gameOver || _isPaused) return;
 
         _timeRemaining -= Time.deltaTime;
 
         if (_prevTime - _timeRemaining < 0.1f || _timeRemaining < 0f) return;
 
-        _hudTime.SetTime(_timeRemaining);
+        OnTimeChanged?.Invoke(_timeRemaining);
         _prevTime = _timeRemaining;
     }
 
@@ -79,5 +99,6 @@ public class GameManager : MonoBehaviour
         _prevTime = _defaultTime;
     }
 
-    public void AddScore(int score) => _hudScore.AddScore("Player", score);
+    public void AddScore(int score) => OnScoreAdded?.Invoke(PlayerName, score);
+    public void SetPlayerName(string name) => PlayerName = name;
 }
