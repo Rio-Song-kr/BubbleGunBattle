@@ -4,6 +4,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 {
     public InputManager Input;
     public Rigidbody Rigid;
+    public PlayerAnimator Ani;
 
     public bool IsInBubble = false;
 
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         Rigid = GetComponent<Rigidbody>();
 
         _collider = GetComponent<CapsuleCollider>();
+        Ani = GetComponent<PlayerAnimator>();
     }
 
     public void TrapInBubble()

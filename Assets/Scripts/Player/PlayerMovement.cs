@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Player _player;
     private Vector2 _moveInput;
+    private float _smoothInputX;
+    private float _smoothInputZ;
+    private bool _isFirstZero = true;
 
     private void Awake()
     {
@@ -61,21 +64,34 @@ public class PlayerMovement : MonoBehaviour
 
         if (_moveInput == Vector2.zero)
         {
+            //# 정지 시 바로 멈추는 것이 아니라, 조금 부드럽게 정지하기 위함
+            if (_isFirstZero)
+            {
+                _smoothInputX = 1f;
+                _smoothInputZ = 1f;
+                _isFirstZero = false;
+            }
             float yVelocity = isGrounded ? 0f : Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 3f);
-            _player.Rigid.velocity = new Vector3(0f, yVelocity, 0f);
+
+            _smoothInputX = Mathf.MoveTowards(_smoothInputX, 0f, Time.deltaTime * 5f);
+            _smoothInputZ = Mathf.MoveTowards(_smoothInputZ, 0f, Time.deltaTime * 5f);
+            _player.Rigid.velocity = new Vector3(_smoothInputX, yVelocity, _smoothInputZ);
         }
         else
         {
+            _isFirstZero = true;
             _player.Rigid.velocity = new Vector3(
                 Mathf.Clamp(_player.Rigid.velocity.x, -_playerMoveSpeed, _playerMoveSpeed),
                 Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 3f),
                 Mathf.Clamp(_player.Rigid.velocity.z, -_playerMoveSpeed, _playerMoveSpeed)
             );
         }
+
+        //# Velocity의 값을 실제 0 ~ 1 사이로 normalize
+        var move = transform.InverseTransformDirection(_player.Rigid.velocity) / _playerMoveSpeed;
+
+        _player.Ani.SetMoveState(move.x, move.z);
     }
 
-    private void GetMoveInput(Vector2 moveInput)
-    {
-        _moveInput = moveInput;
-    }
+    private void GetMoveInput(Vector2 moveInput) => _moveInput = moveInput;
 }
