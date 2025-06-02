@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Goal : MonoBehaviour
@@ -11,7 +8,8 @@ public class Goal : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Bubble"))
         {
-            Destroy(other.gameObject);
+            var bubble = other.gameObject.GetComponent<Bubble>();
+            bubble.Release();
             GameManager.Instance.AddScore(_score);
         }
     }

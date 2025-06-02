@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 {
-    public InputController Input;
+    public InputManager Input;
     public Rigidbody Rigid;
 
     public bool IsInBubble = false;
@@ -11,7 +11,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 
     private void Awake()
     {
-        Input = GetComponent<InputController>();
+        Input = GameManager.Instance.Input;
         Rigid = GetComponent<Rigidbody>();
 
         _collider = GetComponent<CapsuleCollider>();
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         IsInBubble = false;
     }
 
-    public void DestroySelf()
+    public void ReleaseToPool()
     {
     }
 

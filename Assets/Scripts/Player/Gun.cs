@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    [SerializeField] private GameObject _bubblePrefab;
+    // [SerializeField] private GameObject _bubblePrefab;
     [SerializeField] private Transform _fireTransform;
     [SerializeField] private float _fireDelay = 1.0f;
 
@@ -23,7 +23,10 @@ public class Gun : MonoBehaviour
     {
         if (!_fire || !_canFire) return;
 
-        Instantiate(_bubblePrefab, _fireTransform.position, _fireTransform.rotation);
+        var bubble = BubblePool.Instance.Pool.Get();
+        bubble.transform.SetPositionAndRotation(_fireTransform.position, _fireTransform.rotation);
+        bubble.Shoot();
+
         _canFire = false;
         StartCoroutine(FireDelay());
     }

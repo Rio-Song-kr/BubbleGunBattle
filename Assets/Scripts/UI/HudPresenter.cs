@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 
 public class HudPresenter : MonoBehaviour, ISettableScore, ISettableTime
