@@ -81,7 +81,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 
     public void SetCurrentSceneUI(SceneUIController sceneUI) => _currentSceneUI = sceneUI;
     public void PopUpSettings(GameObject currentPanel) => PushToStack(_settingsCanvas, currentPanel);
-    public void PopUpExitConfirm(GameObject currentPanel) => PushToStack(_quitCanvas, currentPanel);
+    public void PopUpQuitConfirm(GameObject currentPanel) => PushToStack(_quitCanvas, currentPanel);
 
     //# Stack 관리
     public void PushToStack(GameObject panel, GameObject currentPanel)

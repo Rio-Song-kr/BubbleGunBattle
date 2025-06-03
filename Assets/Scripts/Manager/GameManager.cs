@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private bool _isGameOver;
     public bool IsGameOver => _isGameOver;
     private bool _isPaused;
+    public bool IsPaused => _isPaused;
     private bool _isFirstChange;
 
     private bool _isTitle = true;
@@ -85,7 +86,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (IsTitle || _isGameOver || _isPaused) return;
+        if (IsTitle || _isGameOver) return;
 
         _timeRemaining -= Time.deltaTime;
 
@@ -124,6 +125,7 @@ public class GameManager : MonoBehaviour
         OnTimeChanged?.Invoke(_defaultTime);
         OnTotalScoreChanged += SetScore;
         _isGameOver = false;
+        _isPaused = false;
         InitializeTime();
     }
 
@@ -136,7 +138,11 @@ public class GameManager : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         OnGameOver?.Invoke(sortedScores, sortedNames);
+    }
 
+    //# 게임을 다시 시작하거나 맵을 이동하면 초기화
+    public void HandleChangeScene()
+    {
         PlayersName = new Dictionary<int, string>();
         PlayersScore = new Dictionary<int, int>();
         OnTotalScoreChanged -= SetScore;
@@ -146,5 +152,12 @@ public class GameManager : MonoBehaviour
     {
         int key = PlayersName.FirstOrDefault(pair => pair.Value == playerName).Key;
         PlayersScore[key] = totalScore;
+    }
+
+    public void SetPaused(bool value)
+    {
+        _isPaused = value;
+        if (_isPaused) Cursor.lockState = CursorLockMode.None;
+        else Cursor.lockState = CursorLockMode.Locked;
     }
 }

@@ -42,6 +42,14 @@ public class SettingsUIController : MonoBehaviour
         _controlButton.onClick.RemoveListener(OnControlClicked);
         _audioButton.onClick.RemoveListener(OnSoundClicked);
         _backButton.onClick.RemoveListener(OnBackClicked);
+        // _graphicButton.interactable = false;
+        // _graphicButton.interactable = true;
+        // _controlButton.interactable = false;
+        // _controlButton.interactable = true;
+        // _audioButton.interactable = false;
+        // _audioButton.interactable = true;
+        // _backButton.interactable = false;
+        // _backButton.interactable = true;
     }
 
     private void PushSettingsPanel(GameObject panel)

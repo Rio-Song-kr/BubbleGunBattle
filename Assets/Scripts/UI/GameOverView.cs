@@ -17,10 +17,7 @@ public class GameOverView : MonoBehaviour
     public Action OnQuitButtonClicked;
     public Action OnRestartButtonClicked;
 
-    private void Awake()
-    {
-        ConnectGameWinCanvas();
-    }
+    private void Awake() => ConnectCanvas();
 
     private void OnEnable()
     {
@@ -36,7 +33,7 @@ public class GameOverView : MonoBehaviour
         _restartButton.onClick.RemoveListener(RestartButtonClicked);
     }
 
-    private void ConnectGameWinCanvas()
+    private void ConnectCanvas()
     {
         var children = gameObject.GetComponentsInChildren<RectTransform>(true);
         foreach (var child in children)

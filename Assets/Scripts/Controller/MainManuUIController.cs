@@ -43,6 +43,13 @@ public class MainMenuUIController : SceneUIController
         _settingsButton.onClick.RemoveListener(OnSettingsClicked);
         _quitButton.onClick.RemoveListener(OnQuitClicked);
         _newGameConfirmButton.onClick.RemoveListener(OnConfirmClicked);
+
+        _newGameButton.interactable = false;
+        _newGameButton.interactable = true;
+        _settingsButton.interactable = false;
+        _settingsButton.interactable = true;
+        _newGameConfirmButton.interactable = false;
+        _newGameConfirmButton.interactable = true;
     }
 
     protected override void Start()
@@ -72,7 +79,7 @@ public class MainMenuUIController : SceneUIController
     }
 
     private void OnSettingsClicked() => GameManager.Instance.UI.PopUpSettings(_mainMenuCanvas);
-    private void OnQuitClicked() => GameManager.Instance.UI.PopUpExitConfirm(_mainMenuCanvas);
+    private void OnQuitClicked() => GameManager.Instance.UI.PopUpQuitConfirm(_mainMenuCanvas);
 
     private void OnConfirmClicked()
     {

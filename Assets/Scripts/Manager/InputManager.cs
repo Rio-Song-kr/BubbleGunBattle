@@ -10,11 +10,13 @@ public class InputManager : MonoBehaviour
     public event Action<Vector2> OnMove;
     public event Action<bool> OnFire;
     public event Action<Vector2> OnRotate;
+    public event Action OnPause;
 
     //# 각 Input Action을 참조할 필드
     private InputAction _move;
     private InputAction _fire;
     private InputAction _rotate;
+    private InputAction _pause;
 
     private void OnEnable()
     {
@@ -22,10 +24,12 @@ public class InputManager : MonoBehaviour
         _move = _inputActions.FindAction("Player/Move");
         _fire = _inputActions.FindAction("Player/Fire");
         _rotate = _inputActions.FindAction("Player/Rotate");
+        _pause = _inputActions.FindAction("Player/Pause");
 
         _move.Enable();
         _fire.Enable();
         _rotate.Enable();
+        _pause.Enable();
 
         //# Move 관련 Action 등록 - 움직일 때는 입력값, 입력이 취소될 땐 0
         _move.performed += OnMovePerformed;
@@ -38,6 +42,8 @@ public class InputManager : MonoBehaviour
         //# Rotate 관련 Action 등록 - 움직일 때는 입력값, 입력이 취소될 땐 0
         _rotate.performed += OnRotatePerformed;
         _rotate.canceled += OnRotateCanceled;
+
+        _pause.started += OnPauseStarted;
     }
 
     private void OnDisable()
@@ -46,6 +52,7 @@ public class InputManager : MonoBehaviour
         _move.Disable();
         _fire.Disable();
         _rotate.Disable();
+        _pause.Disable();
 
         _move.performed -= OnMovePerformed;
         _move.canceled -= OnMoveCanceled;
@@ -55,6 +62,8 @@ public class InputManager : MonoBehaviour
 
         _rotate.performed -= OnRotatePerformed;
         _rotate.canceled -= OnRotateCanceled;
+
+        _pause.started -= OnPauseStarted;
     }
 
     //# 핸들러 메서드
@@ -66,4 +75,6 @@ public class InputManager : MonoBehaviour
 
     private void OnRotatePerformed(InputAction.CallbackContext ctx) => OnRotate?.Invoke(ctx.ReadValue<Vector2>());
     private void OnRotateCanceled(InputAction.CallbackContext ctx) => OnRotate?.Invoke(Vector2.zero);
+
+    private void OnPauseStarted(InputAction.CallbackContext ctx) => OnPause?.Invoke();
 }

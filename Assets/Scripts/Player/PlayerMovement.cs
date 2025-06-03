@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (_player.IsInBubble || !_canMove) return;
+        if (_player.IsInBubble || !_canMove || GameManager.Instance.IsPaused) return;
         UpdateMovement();
     }
 

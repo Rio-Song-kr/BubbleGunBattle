@@ -31,7 +31,7 @@ public class GameOverPresenter : MonoBehaviour
         GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.TitleSceneName, true);
     }
 
-    private void OnQuitButtonClicked() => GameManager.Instance.UI.PopUpExitConfirm(gameObject);
+    private void OnQuitButtonClicked() => GameManager.Instance.UI.PopUpQuitConfirm(gameObject);
 
     private void OnRestartButtonClicked()
     {
@@ -40,7 +40,7 @@ public class GameOverPresenter : MonoBehaviour
         GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.Scene.GetActiveScene());
     }
 
-    private void PopUIRequested() => _uiController?.HideGameOverUI();
+    private void PopUIRequested() => _uiController?.HideUI();
 
     public void HandleGameOver(string[] messages, string titleText)
     {

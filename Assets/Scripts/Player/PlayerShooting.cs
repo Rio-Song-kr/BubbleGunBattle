@@ -24,7 +24,7 @@ public class PlayerShooting : MonoBehaviour
 
     private void Fire(bool fire)
     {
-        if (!fire || !_canFire || !_gun.CanFire || GameManager.Instance.IsGameOver) return;
+        if (!fire || !_canFire || !_gun.CanFire || GameManager.Instance.IsGameOver || GameManager.Instance.IsPaused) return;
 
         //# 애니메이션 동작 및 발사 완료 후 _canFire는 true가 됨
         _canFire = false;

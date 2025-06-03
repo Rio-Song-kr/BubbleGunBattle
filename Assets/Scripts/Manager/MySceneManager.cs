@@ -175,6 +175,7 @@ public class MySceneManager : MonoBehaviour
         _gameLogicOperation = null;
         _inGameUiOperation = null;
         GameManager.Instance.IsTitle = isTitleScene;
+        GameManager.Instance.HandleChangeScene();
     }
 
     public string GetActiveScene() => SceneManager.GetActiveScene().name;
