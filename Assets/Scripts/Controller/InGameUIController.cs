@@ -53,6 +53,9 @@ public class InGameUIController : SceneUIController
         GameManager.Instance.OnScoreAdded += OnScoreAdded;
         GameManager.Instance.OnTimeChanged += OnTimeChanged;
         GameManager.Instance.OnGameOver += HandleGameOver;
+        _mainMenuButton.onClick.AddListener(OnMainMenuButtonClicked);
+        _quitButton.onClick.AddListener(OnQuitButtonClicked);
+        _restartButton.onClick.AddListener(OnRestartButtonClicked);
     }
 
     private void OnDisable()
@@ -60,6 +63,9 @@ public class InGameUIController : SceneUIController
         GameManager.Instance.OnScoreAdded -= OnScoreAdded;
         GameManager.Instance.OnTimeChanged -= OnTimeChanged;
         GameManager.Instance.OnGameOver -= HandleGameOver;
+        _mainMenuButton.onClick.RemoveListener(OnMainMenuButtonClicked);
+        _quitButton.onClick.RemoveListener(OnQuitButtonClicked);
+        _restartButton.onClick.RemoveListener(OnRestartButtonClicked);
     }
 
     protected override void Start()
@@ -71,18 +77,18 @@ public class InGameUIController : SceneUIController
     {
         HideAllSceneUI();
         _hudCanvasObject.SetActive(true);
+        _gameOverObject.SetActive(false);
     }
 
     public override void HideAllSceneUI()
     {
         _hudCanvasObject.SetActive(false);
-        // gameWinPanel.SetActive(false);
-        // gameLosePanel.SetActive(false);
-        // pauseMenuPanel.SetActive(false);
+        _gameOverObject.SetActive(false);
     }
     protected override GameObject GetCurrentActiveScenePanel()
     {
         if (_hudCanvasObject.activeInHierarchy) return _hudCanvasObject;
+        if (_gameOverObject.activeInHierarchy) return _gameOverObject;
         //todo 다른 panel 추가 시 해당 panel 추가해야 함
         return null;
     }
@@ -99,7 +105,23 @@ public class InGameUIController : SceneUIController
     private void OnScoreAdded(string player, int score)
     {
         if (score == 0) _hudScore.SetScore(player, score);
-        else _hudScore.SetScore(player, score);
+        else _hudScore.AddScore(player, score);
+    }
+
+    //# Buttons
+    private void OnMainMenuButtonClicked()
+    {
+        PopSceneUI();
+        GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.TitleSceneName, true);
+    }
+
+    private void OnQuitButtonClicked() => GameManager.Instance.UI.PopUpExitConfirm(_gameOverObject);
+
+    private void OnRestartButtonClicked()
+    {
+        PopSceneUI();
+        GameManager.Instance.SetPlayerName(GameManager.Instance.PlayerName);
+        GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.Scene.GetActiveScene());
     }
 
     private void HandleGameOver(int[] sortedScore, string[] sortedName)

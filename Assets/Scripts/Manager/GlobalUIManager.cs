@@ -25,12 +25,12 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 
     private void Awake()
     {
-        ConnetcLoading();
+        ConnectLoading();
         ConnectSetting();
         ConnectQuit();
     }
 
-    private void ConnetcLoading()
+    private void ConnectLoading()
     {
         var loadingObject = Resources.Load<GameObject>("LoadingCanvas");
         _loadingCanvas = Instantiate(loadingObject);
