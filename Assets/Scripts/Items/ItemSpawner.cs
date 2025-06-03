@@ -36,7 +36,7 @@ public class ItemSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time < _lastSpawnTime + _spawnTime) return;
+        if (Time.time < _lastSpawnTime + _spawnTime || GameManager.Instance.IsGameOver) return;
 
         _lastSpawnTime = Time.time;
         _spawnTime = Random.Range(_spawnMinTime, _spawnTime);

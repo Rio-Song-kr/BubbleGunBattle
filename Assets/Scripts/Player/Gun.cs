@@ -20,7 +20,7 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
-        if (!_fire || !CanFire) return;
+        if (!_fire || !CanFire || GameManager.Instance.IsGameOver) return;
 
         var bubble = BubblePool.Instance.Pool.Get();
         bubble.transform.SetPositionAndRotation(_fireTransform.position, _fireTransform.rotation);

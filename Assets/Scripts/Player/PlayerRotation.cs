@@ -33,7 +33,7 @@ public class PlayerRotation : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player.IsInBubble) return;
+        if (_player.IsInBubble || GameManager.Instance.IsGameOver) return;
         UpdateRotation();
     }
 

@@ -19,7 +19,8 @@ public class GameManager : MonoBehaviour
 
     private float _timeRemaining;
     private float _prevTime;
-    private bool _gameOver;
+    private bool _isGameOver;
+    public bool IsGameOver => _isGameOver;
     private bool _isPaused;
     private bool _isFirstChange;
 
@@ -78,13 +79,13 @@ public class GameManager : MonoBehaviour
         InitializeTime();
 
         //todo 추후 게임 시작 시 3초 카운트다운 후 시작하도록 변경해야 함
-        _gameOver = false;
+        _isGameOver = false;
         _isPaused = false;
     }
 
     private void Update()
     {
-        if (IsTitle || _gameOver || _isPaused) return;
+        if (IsTitle || _isGameOver || _isPaused) return;
 
         _timeRemaining -= Time.deltaTime;
 
@@ -92,7 +93,7 @@ public class GameManager : MonoBehaviour
 
         if (_timeRemaining <= 0f)
         {
-            _gameOver = true;
+            _isGameOver = true;
             HandleGameOver();
         }
 
@@ -122,7 +123,7 @@ public class GameManager : MonoBehaviour
         OnScoreAdded?.Invoke(PlayerName, 0);
         OnTimeChanged?.Invoke(_defaultTime);
         OnTotalScoreChanged += SetScore;
-        _gameOver = false;
+        _isGameOver = false;
         InitializeTime();
     }
 
