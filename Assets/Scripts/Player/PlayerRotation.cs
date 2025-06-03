@@ -17,7 +17,6 @@ public class PlayerRotation : MonoBehaviour
 
     private void Awake()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         _player = GetComponent<Player>();
     }
 

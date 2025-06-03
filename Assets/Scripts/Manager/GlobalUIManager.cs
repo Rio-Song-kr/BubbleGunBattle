@@ -25,12 +25,12 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 
     private void Awake()
     {
-        SetUpLoading();
-        SetUpSetting();
-        SetUpQuit();
+        ConnetcLoading();
+        ConnectSetting();
+        ConnectQuit();
     }
 
-    private void SetUpLoading()
+    private void ConnetcLoading()
     {
         var loadingObject = Resources.Load<GameObject>("LoadingCanvas");
         _loadingCanvas = Instantiate(loadingObject);
@@ -47,7 +47,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
         }
     }
 
-    private void SetUpSetting()
+    private void ConnectSetting()
     {
         var settingsObject = Resources.Load<GameObject>("SettingsCanvas");
         _settingsCanvas = Instantiate(settingsObject);
@@ -55,7 +55,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
         _settingsCanvas.SetActive(false);
     }
 
-    private void SetUpQuit()
+    private void ConnectQuit()
     {
         var quitObject = Resources.Load<GameObject>("QuitConfirmCanvas");
         _quitCanvas = Instantiate(quitObject);

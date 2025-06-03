@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -10,9 +12,6 @@ public class GameManager : MonoBehaviour
     public InputManager Input { get; private set; }
     public GlobalUIManager UI { get; private set; }
     public MySceneManager Scene { get; private set; }
-
-    // private ISettableScore _hudScore;
-    // private ISettableTime _hudTime;
 
     // private readonly float _defaultTime = 300f;
     [SerializeField] private float _defaultTime = 10;
@@ -32,18 +31,21 @@ public class GameManager : MonoBehaviour
         {
             _isTitle = value;
 
-            if (!_isTitle)
-            {
-                OnScoreAdded?.Invoke(PlayerName, 0);
-                OnTimeChanged?.Invoke(_defaultTime);
-            }
+            if (!_isTitle) HandleGameStart();
         }
     }
 
     public Action<float> OnTimeChanged;
+    public Action<int[], string[]> OnGameOver;
     public Action<string, int> OnScoreAdded;
+    // public Action<string, int> OnTotalScoreChanged;
 
     public string PlayerName { get; private set; }
+    //# Fun2 적용 시 player의 ActorNumber로 이름 등록 및 점수 관리
+    private Dictionary<int, string> PlayerNames = new Dictionary<int, string>();
+    private Dictionary<int, int> PlayerScores = new Dictionary<int, int>();
+    // public string WinnerPlayerName { get; private set; }
+    // public int WinnerScore { get; private set; }
 
     public static void CreateInstance()
     {
@@ -87,7 +89,13 @@ public class GameManager : MonoBehaviour
 
         _timeRemaining -= Time.deltaTime;
 
-        if (_prevTime - _timeRemaining < 0.1f || _timeRemaining < 0f) return;
+        if (_prevTime - _timeRemaining < 0.1f) return;
+
+        if (_timeRemaining <= 0f)
+        {
+            _gameOver = true;
+            HandleGameOver();
+        }
 
         OnTimeChanged?.Invoke(_timeRemaining);
         _prevTime = _timeRemaining;
@@ -100,5 +108,47 @@ public class GameManager : MonoBehaviour
     }
 
     public void AddScore(int score) => OnScoreAdded?.Invoke(PlayerName, score);
-    public void SetPlayerName(string name) => PlayerName = name;
+
+    public void SetPlayerName(string name)
+    {
+        PlayerName = name;
+        //todo 현재는 싱글 플레이어이므로, actorNumber는 0으로 사용
+        PlayerNames.Add(0, PlayerName);
+        PlayerScores.Add(0, 0);
+    }
+
+    private void HandleGameStart()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        OnScoreAdded?.Invoke(PlayerName, 0);
+        OnTimeChanged?.Invoke(_defaultTime);
+        // WinnerPlayerName = "";
+        // WinnerScore = 0;
+    }
+
+    private void HandleGameOver()
+    {
+        //todo Winner를 판별해야 함
+        int playerActorNumber = 0;
+        int maxScore = 0;
+
+        foreach (var playerScore in PlayerScores)
+        {
+            if (playerScore.Value > maxScore)
+            {
+                playerActorNumber = playerScore.Key;
+                maxScore = playerScore.Value;
+            }
+        }
+
+        var sorted = PlayerScores.OrderByDescending(pair => pair.Value).ToArray();
+        int[] sortedScores = sorted.Select(pair => pair.Value).ToArray();
+        string[] sortedNames = sorted.Select(pair => PlayerNames[pair.Key]).ToArray();
+
+        // WinnerPlayerName = _playerNames[playerActorNumber];
+        // WinnerScore = _playerScores[playerActorNumber];
+
+        Cursor.lockState = CursorLockMode.None;
+        OnGameOver?.Invoke(sortedScores, sortedNames);
+    }
 }

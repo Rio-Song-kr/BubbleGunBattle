@@ -85,6 +85,7 @@ public class SettingsUIController : MonoBehaviour
         return null;
     }
 
+    //todo 세부 Panel 구현해야 함
     private void OnGraphicClicked() => PushSettingsPanel(_audioSettingsPanel);
     private void OnControlClicked() => PushSettingsPanel(_graphicSettingsPanel);
     private void OnSoundClicked() => PushSettingsPanel(_controlSettingsPanel);
