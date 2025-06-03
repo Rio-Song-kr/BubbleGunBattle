@@ -14,6 +14,7 @@ public class HudPresenter : MonoBehaviour, ISettableScore, ISettableTime
     {
         _scoreModel.AddScore(score);
         SetScoreText(playerName, _scoreModel.GetScore());
+        GameManager.Instance.OnTotalScoreChanged?.Invoke(playerName, _scoreModel.GetScore());
     }
 
     public void SetScore(string playerName, int score)

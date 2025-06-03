@@ -17,7 +17,6 @@ public class PlayerRotation : MonoBehaviour
 
     private void Awake()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         _player = GetComponent<Player>();
     }
 
@@ -34,7 +33,7 @@ public class PlayerRotation : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player.IsInBubble) return;
+        if (_player.IsInBubble || GameManager.Instance.IsGameOver || GameManager.Instance.IsPaused) return;
         UpdateRotation();
     }
 

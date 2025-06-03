@@ -24,6 +24,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "4d1eee2d-1d95-4545-a69f-f9d48fd8c7d7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Rotate",
                     "type": "Value",
                     "id": "83298885-6428-44dd-bdc9-65e05e1b724d",
@@ -114,11 +123,33 @@
                 {
                     "name": "",
                     "id": "a7dc745d-a372-4a90-bd56-326256cbb7a9",
-                    "path": "<Gamepad>/leftShoulder",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";PC",
                     "action": "Fire",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8ddbe619-8873-483d-9f17-792ce2d7249c",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "608c5d49-6329-4351-b312-00230231f429",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

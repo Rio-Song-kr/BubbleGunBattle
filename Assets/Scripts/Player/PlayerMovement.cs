@@ -39,7 +39,13 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player.IsInBubble || !_canMove) return;
+        if (GameManager.Instance.IsGameOver)
+        {
+            _player.Ani.SetMoveState(0, 0);
+            return;
+        }
+
+        if (_player.IsInBubble || !_canMove || GameManager.Instance.IsPaused) return;
         UpdateMovement();
     }
 
