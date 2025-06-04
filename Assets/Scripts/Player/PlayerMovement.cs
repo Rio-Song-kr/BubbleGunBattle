@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (GameManager.Instance.IsGameOver)
+        if (GameManager.Instance.IsGameOver || GameManager.Instance.IsPaused)
         {
             _player.Ani.SetMoveState(0, 0);
             return;
