@@ -9,14 +9,12 @@ using UnityEngine.SceneManagement;
 public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 {
     private GameObject _loadingCanvas;
-    private GameObject _settingsCanvs;
+    private GameObject _settingsCanvas;
     private GameObject _quitCanvas;
 
     private GameObject _audioSettingsCanvas;
     private GameObject _graphicSettingsCanvas;
     private GameObject _controlSettingsCanvas;
-
-    private GameObject _settingsCanvas;
 
     private TMP_Text _loadingText;
     private TMP_Text _loadingProgressText;
@@ -57,16 +55,24 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
     {
         // var settingsObject = Resources.Load<GameObject>("SettingsObject");
         var settingsObject = Resources.Load<GameObject>("SettingsCanvas");
-        _settingsCanvs = Instantiate(settingsObject, transform);
-        _settingsCanvs.SetActive(false);
+        _settingsCanvas = Instantiate(settingsObject, transform);
+        _settingsCanvas.SetActive(false);
 
-        var _audioSettingsObject = Resources.Load<GameObject>("AudioSettingsCanvas");
-        _audioSettingsCanvas = Instantiate(_audioSettingsObject, transform);
+        var audioSettingObject = Resources.Load<GameObject>("AudioSettingCanvas");
+        _audioSettingsCanvas = Instantiate(audioSettingObject, transform);
 
-        var _audioSettingsView = _audioSettingsCanvas.GetComponent<AudioSettingPresenter>();
-        _audioSettingsView.Init();
+        var audioSettingsView = _audioSettingsCanvas.GetComponent<AudioSettingPresenter>();
+        audioSettingsView.Init();
 
         _audioSettingsCanvas.SetActive(false);
+
+        var controlSettingObject = Resources.Load<GameObject>("ControlSettingCanvas");
+        _controlSettingsCanvas = Instantiate(controlSettingObject, transform);
+
+        var controlSettingView = _controlSettingsCanvas.GetComponent<ControlSettingPresenter>();
+        controlSettingView.Init();
+
+        _controlSettingsCanvas.SetActive(false);
     }
 
     private void ConnectQuit()
@@ -94,7 +100,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
     }
 
     public void SetCurrentSceneUI(SceneUIController sceneUI) => _currentSceneUI = sceneUI;
-    public void PopUpSettings(GameObject currentPanel) => PushToStack(_settingsCanvs, currentPanel);
+    public void PopUpSettings(GameObject currentPanel) => PushToStack(_settingsCanvas, currentPanel);
     public void PopUpGraphicSettings(GameObject currentPanel) => PushToStack(_graphicSettingsCanvas, currentPanel);
     public void PopUpControlSettings(GameObject currentPanel) => PushToStack(_controlSettingsCanvas, currentPanel);
     public void PopUpAudioSettings(GameObject currentPanel) => PushToStack(_audioSettingsCanvas, currentPanel);
@@ -141,10 +147,10 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 
     private void HideAllGlobalUI()
     {
-        _settingsCanvs.SetActive(false);
+        _settingsCanvas.SetActive(false);
         _quitCanvas.SetActive(false);
         _audioSettingsCanvas.SetActive(false);
-        // _controlSettingsCanvas.SetActive(false);
+        _controlSettingsCanvas.SetActive(false);
         // _graphicSettingsCanvas.SetActive(false);
 
         if (!GameManager.Instance.Scene.IsLoading)

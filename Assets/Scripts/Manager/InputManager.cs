@@ -18,6 +18,9 @@ public class InputManager : MonoBehaviour
     private InputAction _rotate;
     private InputAction _pause;
 
+    private float _mouseSensitivity = 1f;
+    public float MouseSensitivity => _mouseSensitivity;
+
     private void OnEnable()
     {
         //# 활성화된 Action Map이지만, 확실히 하기 위해 활성화
@@ -77,4 +80,9 @@ public class InputManager : MonoBehaviour
     private void OnRotateCanceled(InputAction.CallbackContext ctx) => OnRotate?.Invoke(Vector2.zero);
 
     private void OnPauseStarted(InputAction.CallbackContext ctx) => OnPause?.Invoke();
+
+    public void SetMouseSensitivity(float value)
+    {
+        _mouseSensitivity = value;
+    }
 }
