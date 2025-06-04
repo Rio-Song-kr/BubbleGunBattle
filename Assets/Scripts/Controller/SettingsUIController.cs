@@ -4,9 +4,9 @@ using UnityEngine.UI;
 
 public class SettingsUIController : MonoBehaviour
 {
-    private GameObject _graphicSettingsPanel;
-    private GameObject _controlSettingsPanel;
-    private GameObject _audioSettingsPanel;
+    // private GameObject _graphicSettingsPanel;
+    // private GameObject _controlSettingsPanel;
+    // private GameObject _audioSettingsPanel;
 
     private Button _graphicButton;
     private Button _controlButton;
@@ -23,8 +23,8 @@ public class SettingsUIController : MonoBehaviour
             else if (child.transform.name.Equals("Control Button")) _controlButton = child.GetComponent<Button>();
             else if (child.transform.name.Equals("Audio Button")) _audioButton = child.GetComponent<Button>();
             else if (child.transform.name.Equals("Back Button")) _backButton = child.GetComponent<Button>();
-            else if (child.transform.name.Equals("Graphic Setting")) _graphicSettingsPanel = child.gameObject;
-            else if (child.transform.name.Equals("Control Setting")) _controlSettingsPanel = child.gameObject;
+            // else if (child.transform.name.Equals("Graphic Setting")) _graphicSettingsPanel = child.gameObject;
+            // else if (child.transform.name.Equals("Control Setting")) _controlSettingsPanel = child.gameObject;
         }
 
         _graphicButton.onClick.AddListener(OnGraphicClicked);
