@@ -36,7 +36,6 @@ public class GameOverPresenter : MonoBehaviour
     private void OnRestartButtonClicked()
     {
         PopUIRequested();
-        GameManager.Instance.SetPlayerName(GameManager.Instance.PlayerName);
         GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.Scene.GetActiveScene());
     }
 

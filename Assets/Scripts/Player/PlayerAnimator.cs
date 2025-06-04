@@ -17,7 +17,11 @@ public class PlayerAnimator : MonoBehaviour
         _animator.SetFloat(_hashMoveZ, moveZ);
     }
 
-    public void SetFallState() => _animator.SetTrigger(_hashIsFalling);
+    public void SetFallState()
+    {
+        _animator.SetTrigger(_hashIsFalling);
+        GameManager.Instance.Audio.PlaySFX(AudioClipName.SittingSound, transform.position, false, 0.5f, 0.5f);
+    }
     public void SetBalloonFishState(bool value) => _animator.SetBool(_hashIsInBubble, value);
     public void SetFire() => _animator.SetTrigger(_hashFire);
 }

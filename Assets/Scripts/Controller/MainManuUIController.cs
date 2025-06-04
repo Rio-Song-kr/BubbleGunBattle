@@ -43,19 +43,9 @@ public class MainMenuUIController : SceneUIController
         _settingsButton.onClick.RemoveListener(OnSettingsClicked);
         _quitButton.onClick.RemoveListener(OnQuitClicked);
         _newGameConfirmButton.onClick.RemoveListener(OnConfirmClicked);
-
-        _newGameButton.interactable = false;
-        _newGameButton.interactable = true;
-        _settingsButton.interactable = false;
-        _settingsButton.interactable = true;
-        _newGameConfirmButton.interactable = false;
-        _newGameConfirmButton.interactable = true;
     }
 
-    protected override void Start()
-    {
-        base.Start();
-    }
+    protected override void Start() => base.Start();
 
     public override void ShowDefaultUI()
     {
@@ -71,7 +61,7 @@ public class MainMenuUIController : SceneUIController
         return null;
     }
 
-    // Button Events
+    //# Button Events
     private void OnNewGameClicked()
     {
         _mainMenuCanvas.SetActive(false);

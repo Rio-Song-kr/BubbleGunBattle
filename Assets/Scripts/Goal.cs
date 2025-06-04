@@ -11,6 +11,7 @@ public class Goal : MonoBehaviour
             var bubble = other.gameObject.GetComponent<Bubble>();
             bubble.Release();
             GameManager.Instance.AddScore(_score);
+            GameManager.Instance.Audio.PlaySFX(AudioClipName.GoalSound, transform.position);
         }
     }
 }
