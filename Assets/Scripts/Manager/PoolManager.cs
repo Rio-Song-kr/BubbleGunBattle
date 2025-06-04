@@ -4,6 +4,12 @@ using UnityEngine.Pool;
 public class PoolManager<T> where T : MonoBehaviour
 {
     private readonly IObjectPool<T> _pool;
+    private bool _isSceneChanged = false;
+
+    private void Start()
+    {
+        GameManager.Instance.OnSceneChanged += OnSceneChanged;
+    }
 
     public PoolManager(T prefab, int defaultCapacity = 5, int maxSize = 10, Transform transform = null)
     {
@@ -19,7 +25,13 @@ public class PoolManager<T> where T : MonoBehaviour
         );
     }
 
-    public T Get() => _pool?.Get();
+    public T Get() => _isSceneChanged ? null : _pool.Get();
 
-    public void Release(T obj) => _pool?.Release(obj);
+    public void Release(T obj)
+    {
+        if (_isSceneChanged) return;
+        _pool?.Release(obj);
+    }
+
+    private void OnSceneChanged() => _isSceneChanged = true;
 }

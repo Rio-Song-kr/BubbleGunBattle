@@ -34,6 +34,7 @@ public class PausePresenter : MonoBehaviour
     private void OnMainMenuButtonClicked()
     {
         PopUIRequested();
+        GameManager.Instance.OnSceneChanged?.Invoke();
         GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.TitleSceneName, true);
     }
 

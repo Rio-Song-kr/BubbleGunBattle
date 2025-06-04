@@ -20,6 +20,7 @@ public class Bubble : MonoBehaviour
     private bool _hasObject;
     private Vector3 _objectOffset;
     private float _defaultDrag;
+    private bool _isSceneChanged;
 
     private void Awake()
     {
@@ -29,11 +30,17 @@ public class Bubble : MonoBehaviour
     }
 
     //# Disable 시 InitFields가 호출되지만 확실하게 하기 위해서 Enable 시에도 InitFields 호출
-    private void OnEnable() => InitFields();
+    private void OnEnable()
+    {
+        InitFields();
+        GameManager.Instance.OnSceneChanged += OnSceneChanged;
+    }
 
     private void OnDisable()
     {
-        var effect = BubblePopEffectPool.Instance.Pool?.Get();
+        if (_isSceneChanged) return;
+
+        var effect = BubblePopEffectPool.Instance.Pool.Get();
         effect.transform.SetPositionAndRotation(transform.position, transform.rotation);
         effect.Play();
     }
@@ -224,4 +231,6 @@ public class Bubble : MonoBehaviour
         if (!gameObject.activeSelf) return;
         _releaseBubbleCoroutine = StartCoroutine(ReleaseBubble(_bubbleData.ItemTrappedReleaseDelay));
     }
+
+    private void OnSceneChanged() => _isSceneChanged = true;
 }
