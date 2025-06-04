@@ -42,6 +42,7 @@ public class GameManager : MonoBehaviour
     public Action<int[], string[], string> OnGameOver;
     public Action<string, int> OnScoreAdded;
     public Action<string, int> OnTotalScoreChanged;
+    public Action OnSceneChanged;
 
     public string PlayerName { get; private set; }
     //# Fun2 적용 시 player의 ActorNumber로 이름 등록 및 점수 관리

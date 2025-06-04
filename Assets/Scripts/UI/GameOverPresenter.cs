@@ -28,6 +28,7 @@ public class GameOverPresenter : MonoBehaviour
     private void OnMainMenuButtonClicked()
     {
         PopUIRequested();
+        GameManager.Instance.OnSceneChanged?.Invoke();
         GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.TitleSceneName, true);
     }
 
@@ -36,6 +37,7 @@ public class GameOverPresenter : MonoBehaviour
     private void OnRestartButtonClicked()
     {
         PopUIRequested();
+        GameManager.Instance.OnSceneChanged?.Invoke();
         GameManager.Instance.Scene.LoadSceneAsync(GameManager.Instance.Scene.GetActiveScene());
     }
 
