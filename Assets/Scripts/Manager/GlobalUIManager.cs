@@ -27,6 +27,8 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
     private Stack<GameObject> _uiStack = new Stack<GameObject>();
     private SceneUIController _currentSceneUI;
 
+    public Action<int> OnBrightnessChanged;
+
     private void Start()
     {
         ConnectLoading();
