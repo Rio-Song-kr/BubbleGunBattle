@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerShooting : MonoBehaviour
 {
     [SerializeField] private Gun _gun;
     private Player _player;
+    private bool _canFire = true;
 
     private void Awake()
     {
@@ -25,6 +24,16 @@ public class PlayerShooting : MonoBehaviour
 
     private void Fire(bool fire)
     {
-        _gun.Fire(fire);
+        if (!fire || !_canFire || !_gun.CanFire || GameManager.Instance.IsGameOver || GameManager.Instance.IsPaused) return;
+
+        //# 애니메이션 동작 및 발사 완료 후 _canFire는 true가 됨
+        _canFire = false;
+        _player.Ani.SetFire();
+    }
+
+    private void GunShoot()
+    {
+        _gun.Fire();
+        _canFire = true;
     }
 }

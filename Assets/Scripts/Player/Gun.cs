@@ -5,26 +5,28 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    [SerializeField] private GameObject _bubblePrefab;
     [SerializeField] private Transform _fireTransform;
     [SerializeField] private float _fireDelay = 1.0f;
 
     private bool _fire;
-    private bool _canFire;
-    // private Coroutine _coroutine;
+    public bool CanFire { get; private set; }
 
     private void OnEnable()
     {
         _fire = false;
-        _canFire = true;
+        CanFire = true;
     }
 
     private void Update()
     {
-        if (!_fire || !_canFire) return;
+        if (!_fire || !CanFire || GameManager.Instance.IsGameOver) return;
 
-        Instantiate(_bubblePrefab, _fireTransform.position, _fireTransform.rotation);
-        _canFire = false;
+        var bubble = BubblePool.Instance.Pool.Get();
+        bubble.transform.SetPositionAndRotation(_fireTransform.position, _fireTransform.rotation);
+        bubble.Shoot();
+
+        CanFire = false;
+        _fire = false;
         StartCoroutine(FireDelay());
     }
 
@@ -33,11 +35,8 @@ public class Gun : MonoBehaviour
         var wait = new WaitForSeconds(_fireDelay);
 
         yield return wait;
-        _canFire = true;
+        CanFire = true;
     }
 
-    public void Fire(bool fire)
-    {
-        _fire = fire;
-    }
+    public void Fire() => _fire = true;
 }

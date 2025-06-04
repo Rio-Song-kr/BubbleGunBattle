@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -6,9 +7,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _playerMoveSpeed;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _groundCheckDistance;
+    [SerializeField] private float _deceleration = 0.90f;
 
     private Player _player;
     private Vector2 _moveInput;
+    private float _smoothInputX;
+    private float _smoothInputZ;
+    private float _latestVelocityY = 0f;
+
+    private bool _isFirstZero = true;
+    private bool _isFalling = false;
+    private bool _canMove = true;
+
+    private WaitForSeconds _wait = new WaitForSeconds(0.5f);
 
     private void Awake()
     {
@@ -28,68 +39,96 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_player.IsInBubble) return;
+        if (GameManager.Instance.IsGameOver)
+        {
+            _player.Ani.SetMoveState(0, 0);
+            return;
+        }
+
+        if (_player.IsInBubble || !_canMove || GameManager.Instance.IsPaused) return;
         UpdateMovement();
     }
 
     private void UpdateMovement()
     {
         //# velocity로 Player를 움직일 때, 경사나 턱이 있을 경우, 날아가는 현상을 막기 위해 Ground Check
+        //# 플레이어의 기준 축이 바닥이기에 offset을 추가하여 origin 보정
         bool isGrounded =
-            Physics.Raycast(transform.position + new Vector3(0, 1f, 0f), Vector3.down, _groundCheckDistance, _groundLayer);
+            Physics.Raycast(transform.position + Vector3.up, Vector3.down, _groundCheckDistance, _groundLayer);
 
         var moveDirection = (_moveInput.y * transform.forward + _moveInput.x * transform.right).normalized;
         moveDirection *= _playerMoveSpeed;
 
+        //# 땅에 붙어서 움직일 때와 공중에서 떨어지는 상황에서 가하는 힘의 보정을 위한 변수
+        float forceMultiply;
+
+        //# forceMultiply의 값이 크면 떨어지는 도중에 벽 등에 부딪히면 공중에서 멈추는 현상이 있음
+        //# 가해주는 힘을 감소시켜 벽 쪽으로 힘을 주더라도 계속 떨어질 수 있게 보정
         if (isGrounded)
         {
             moveDirection.y = 0f;
-        }
+            forceMultiply = 5f;
 
-        var moveOffset = moveDirection * Time.fixedDeltaTime;
-
-        // //# 충돌 검사
-        // if (_player.Rigid.SweepTest(moveOffset.normalized, out var hit, moveOffset.magnitude))
-        // {
-        //     //# 벽과 충돌했다면 슬라이딩
-        //     if (hit.collider.CompareTag("Background"))
-        //     {
-        //         //# 충돌한 경우, 슬라이딩을 위해 벽에 수직한 방향 제거
-        //         var slidingDirection = Vector3.ProjectOnPlane(moveOffset, hit.normal).normalized;
-        //
-        //         //# 슬라이딩 방향도 검사 후 막혔다면 이동하지 않음
-        //         if (_player.Rigid.SweepTest(slidingDirection, out var slideHit, moveOffset.magnitude)) return;
-        //
-        //         //# 충돌 안 했으면 슬라이딩 방향으로만 이동
-        //         _player.Rigid.MovePosition(_player.Rigid.position + slidingDirection * moveOffset.magnitude);
-        //
-        //         return;
-        //     }
-        // }
-        // //# 충돌을 안했거나 벽이 아니라면 원래 방향으로 이동
-        // _player.Rigid.MovePosition(_player.Rigid.position + moveOffset);
-
-        _player.Rigid.AddForce(moveOffset * 10, ForceMode.VelocityChange);
-
-        if (_moveInput == Vector2.zero)
-        {
-            float yVelocity = 0f;
-            if (!isGrounded)
-                yVelocity = Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 2.5f);
-            _player.Rigid.velocity = new Vector3(0f, yVelocity, 0f);
+            if (_isFalling && _latestVelocityY < -4.9f)
+            {
+                _isFalling = false;
+                _player.Ani.SetFallState();
+                _canMove = false;
+                _player.Rigid.velocity = Vector3.zero;
+                StartCoroutine(BlockMoveCoroutine());
+            }
         }
         else
         {
+            //# 허공에서 x, z 움직이는 속도를 지속적으로 감속
+            forceMultiply = 2f;
+            _isFalling = true;
+            var velocity = _player.Rigid.velocity;
+            velocity.x *= _deceleration;
+            velocity.z *= _deceleration;
+            _player.Rigid.velocity = velocity;
+        }
+
+        _player.Rigid.AddForce(forceMultiply * Time.fixedDeltaTime * moveDirection, ForceMode.VelocityChange);
+
+        if (_moveInput == Vector2.zero)
+        {
+            //# 정지 시 바로 멈추는 것이 아니라, 조금 부드럽게 정지하기 위함
+            if (_isFirstZero)
+            {
+                _smoothInputX = 1f;
+                _smoothInputZ = 1f;
+                _isFirstZero = false;
+            }
+            float yVelocity = isGrounded ? 0f : Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 3f);
+
+            _smoothInputX = Mathf.MoveTowards(_smoothInputX, 0f, Time.deltaTime * 5f);
+            _smoothInputZ = Mathf.MoveTowards(_smoothInputZ, 0f, Time.deltaTime * 5f);
+            _player.Rigid.velocity = new Vector3(_smoothInputX, yVelocity, _smoothInputZ);
+        }
+        else
+        {
+            _isFirstZero = true;
             _player.Rigid.velocity = new Vector3(
                 Mathf.Clamp(_player.Rigid.velocity.x, -_playerMoveSpeed, _playerMoveSpeed),
-                Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 2.5f),
+                Mathf.Clamp(_player.Rigid.velocity.y, float.MinValue, 3f),
                 Mathf.Clamp(_player.Rigid.velocity.z, -_playerMoveSpeed, _playerMoveSpeed)
             );
         }
+
+        _latestVelocityY = _player.Rigid.velocity.y;
+
+        //# Velocity의 값을 실제 0 ~ 1 사이로 normalize
+        var move = transform.InverseTransformDirection(_player.Rigid.velocity) / _playerMoveSpeed;
+
+        _player.Ani.SetMoveState(move.x, move.z);
     }
 
-    private void GetMoveInput(Vector2 moveInput)
+    private void GetMoveInput(Vector2 moveInput) => _moveInput = moveInput;
+
+    private IEnumerator BlockMoveCoroutine()
     {
-        _moveInput = moveInput;
+        yield return _wait;
+        _canMove = true;
     }
 }

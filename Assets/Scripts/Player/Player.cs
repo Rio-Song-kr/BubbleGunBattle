@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 {
-    public InputController Input;
+    public InputManager Input;
     public Rigidbody Rigid;
+    public PlayerAnimator Ani;
 
     public bool IsInBubble = false;
 
@@ -11,21 +12,24 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
 
     private void Awake()
     {
-        Input = GetComponent<InputController>();
+        Input = GameManager.Instance.Input;
         Rigid = GetComponent<Rigidbody>();
 
         _collider = GetComponent<CapsuleCollider>();
+        Ani = GetComponent<PlayerAnimator>();
     }
 
     public void TrapInBubble()
     {
         //# 플레이어가 갇혀있어야 하므로 중력을 끄고 물리 법칙 적용을 받지 않기 위해 kinematic true;
+        Rigid.velocity = Vector3.zero;
         Rigid.useGravity = false;
         Rigid.isKinematic = true;
 
         _collider.enabled = false;
 
         IsInBubble = true;
+        Ani.SetBalloonFishState(IsInBubble);
     }
 
     public void PopBubble()
@@ -41,6 +45,11 @@ public class Player : MonoBehaviour, IBubbleInteractable, ITransformAdjustable
         _collider.enabled = true;
 
         IsInBubble = false;
+        Ani.SetBalloonFishState(IsInBubble);
+    }
+
+    public void ReleaseToPool()
+    {
     }
 
     public void SetPosition(Vector3 position) => transform.position = position;
