@@ -86,6 +86,15 @@ public class GameManager : MonoBehaviour
         _isPaused = false;
     }
 
+    private void Start()
+    {
+        //todo 추후 Graphics Setting이 추가되면 제거 예정
+        int targetWidth = 1920;
+        int targetHeight = 1080;
+
+        Screen.SetResolution(targetWidth, targetHeight, true);
+    }
+
     private void Update()
     {
         if (IsTitle || _isGameOver) return;
