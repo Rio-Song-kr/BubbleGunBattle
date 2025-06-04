@@ -46,12 +46,13 @@ public class PlayerRotation : MonoBehaviour
         _smoothedInput = Vector2.Lerp(_smoothedInput, _rotateInput, _inputSmoothSpeed * Time.deltaTime);
 
         //# Yaw 회전
-        float turn = _rotateSpeed * _inputSmoothSpeed * _smoothedInput.x * Time.deltaTime;
+        float turn = _rotateSpeed * _inputSmoothSpeed * _smoothedInput.x * Time.deltaTime * _player.Input.MouseSensitivity;
         var targetYaw = _player.Rigid.rotation * Quaternion.Euler(0f, turn, 0f);
         _player.Rigid.rotation = Quaternion.Slerp(_player.transform.rotation, targetYaw, 0.1f);
 
         //# Pitch 회전
-        _currentPitch += _smoothedInput.y * _pitchSpeed * (_pitchInverse ? 1 : -1) * Time.deltaTime;
+        _currentPitch +=
+            _smoothedInput.y * _pitchSpeed * (_pitchInverse ? 1 : -1) * Time.deltaTime * _player.Input.MouseSensitivity;
         _currentPitch = Mathf.Clamp(_currentPitch, _minPitch, _maxPitch);
 
         var targetPitch = Quaternion.Euler(_currentPitch, 0f, 0f);
