@@ -58,21 +58,30 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
         _settingsCanvas = Instantiate(settingsObject, transform);
         _settingsCanvas.SetActive(false);
 
+        //# Audio
         var audioSettingObject = Resources.Load<GameObject>("AudioSettingCanvas");
         _audioSettingsCanvas = Instantiate(audioSettingObject, transform);
 
         var audioSettingsView = _audioSettingsCanvas.GetComponent<AudioSettingPresenter>();
         audioSettingsView.Init();
-
         _audioSettingsCanvas.SetActive(false);
 
+        //# Control
         var controlSettingObject = Resources.Load<GameObject>("ControlSettingCanvas");
         _controlSettingsCanvas = Instantiate(controlSettingObject, transform);
 
         var controlSettingView = _controlSettingsCanvas.GetComponent<ControlSettingPresenter>();
         controlSettingView.Init();
-
         _controlSettingsCanvas.SetActive(false);
+
+        //# Graphic
+        var graphicSettingObject = Resources.Load<GameObject>("GraphicSettingCanvas");
+        _graphicSettingsCanvas = Instantiate(graphicSettingObject, transform);
+
+        var graphicSettingView = _graphicSettingsCanvas.GetComponent<GraphicSettingPresenter>();
+        graphicSettingView.Init();
+
+        _graphicSettingsCanvas.SetActive(false);
     }
 
     private void ConnectQuit()
@@ -151,7 +160,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
         _quitCanvas.SetActive(false);
         _audioSettingsCanvas.SetActive(false);
         _controlSettingsCanvas.SetActive(false);
-        // _graphicSettingsCanvas.SetActive(false);
+        _graphicSettingsCanvas.SetActive(false);
 
         if (!GameManager.Instance.Scene.IsLoading)
         {
