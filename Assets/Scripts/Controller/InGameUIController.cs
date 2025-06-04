@@ -6,7 +6,7 @@ public class InGameUIController : SceneUIController
 {
     private GameObject _hudCanvasObject;
     private GameObject _gameOverObject;
-    public GameObject _pauseMenuObject;
+    private GameObject _pauseMenuObject;
 
     private ISettableScore _hudScore;
     private ISettableTime _hudTime;
