@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class GraphicSettingPresenter : MonoBehaviour
 {
+    [SerializeField] private VolumeProfile _volumeProfile;
     [SerializeField] private GraphicSettingModel _model;
     private GraphicSettingView _view;
     private GraphicSettingModel _tempModel;
@@ -14,6 +17,7 @@ public class GraphicSettingPresenter : MonoBehaviour
 
     private void OnEnable()
     {
+        _view.OnBrightnessValueChanged += OnBrightnessChanged;
         _view.OnFullscreenToggleChanged += OnFullscreenChanged;
         _view.OnResetButtonClicked += OnResetClicked;
         _view.OnBackButtonClicked += OnBackClicked;
@@ -49,10 +53,22 @@ public class GraphicSettingPresenter : MonoBehaviour
     }
 
     //todo 현재 동작하지 않음 수정해야 함
+    // private void ApplyBrightness(int value)
+    // {
+    //     float normalizedBrightness = value / 100f;
+    //     Screen.brightness = normalizedBrightness;
+    // }
+
     private void ApplyBrightness(int value)
     {
-        float normalizedBrightness = value / 100f;
-        Screen.brightness = normalizedBrightness;
+        float exposure = (value - 50f) / 25f; // -2 ~ +2 범위
+
+        ColorAdjustments colorAdjustments;
+
+        if (_volumeProfile.TryGet(out colorAdjustments))
+        {
+            colorAdjustments.postExposure.value = exposure;
+        }
     }
 
     private void ApplyFullscreen(bool value)
@@ -64,6 +80,7 @@ public class GraphicSettingPresenter : MonoBehaviour
     {
         _tempModel.Brightness = value;
         ApplyBrightness(_tempModel.Brightness);
+        GameManager.Instance.UI.OnBrightnessChanged?.Invoke(_tempModel.Brightness);
     }
 
     private void OnFullscreenChanged(bool value)
