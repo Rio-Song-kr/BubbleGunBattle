@@ -51,7 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a501bd3ed951eed4b9d14235d8a7a6aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultTime: 10
+  _defaultTime: 300
   TitleSceneName: TitleScene
 --- !u!114 &5618355581494119363
 MonoBehaviour:
