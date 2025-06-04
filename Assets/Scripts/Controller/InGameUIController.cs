@@ -59,10 +59,7 @@ public class InGameUIController : SceneUIController
         GameManager.Instance.OnGameOver -= HandleGameOver;
     }
 
-    protected override void Start()
-    {
-        base.Start();
-    }
+    protected override void Start() => base.Start();
 
     public override void ShowDefaultUI()
     {
@@ -74,6 +71,7 @@ public class InGameUIController : SceneUIController
 
     public override void HideAllSceneUI()
     {
+        GameManager.Instance.UI.ClearStack();
         _hudCanvasObject.SetActive(false);
         _gameOverObject.SetActive(false);
         _pauseMenuObject.SetActive(false);
@@ -87,19 +85,25 @@ public class InGameUIController : SceneUIController
         return null;
     }
 
-    public void PopUpGameOverUI() => PushSceneUI(_gameOverObject);
-    public void PopUpPauseUI() => PushSceneUI(_pauseMenuObject);
+    public void PopUpGameOverUI()
+    {
+        HideAllSceneUI();
+        PushSceneUI(_gameOverObject);
+    }
+
+    public void PopUpPauseUI()
+    {
+        HideAllSceneUI();
+        PushSceneUI(_pauseMenuObject);
+    }
     public void HideUI() => PopSceneUI();
 
-    private void HandleGameOver(int[] sortedScore, string[] sortedName)
+    private void HandleGameOver(int[] sortedScore, string[] sortedName, string titleText)
     {
         PopUpGameOverUI();
 
         string[] messages = new string[sortedScore.Length];
-        string titleText;
 
-        if (GameManager.Instance.PlayerName == sortedName[0]) titleText = "Win!";
-        else titleText = "Lose...";
 
         for (int i = 0; i < sortedScore.Length; i++)
         {
@@ -120,6 +124,7 @@ public class InGameUIController : SceneUIController
 
     private void GetPaused()
     {
+        if (GameManager.Instance.IsGameOver) return;
         GameManager.Instance.SetPaused(!GameManager.Instance.IsPaused);
 
         if (GameManager.Instance.IsPaused) PopUpPauseUI();

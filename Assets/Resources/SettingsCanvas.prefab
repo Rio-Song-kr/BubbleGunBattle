@@ -160,7 +160,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.48998755, g: 0.8584906, b: 0.49257848, a: 1}
     m_PressedColor: {r: 0.9811321, g: 0.43040225, b: 0.43040225, a: 1}
-    m_SelectedColor: {r: 0.98039216, g: 0.43137255, b: 0.43137255, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.49292454, b: 0.49292454, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -417,7 +417,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.48998755, g: 0.8584906, b: 0.49257848, a: 1}
     m_PressedColor: {r: 0.9811321, g: 0.43040225, b: 0.43040225, a: 1}
-    m_SelectedColor: {r: 0.98039216, g: 0.43137255, b: 0.43137255, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.49292454, b: 0.49292454, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -661,7 +661,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.48998755, g: 0.8584906, b: 0.49257848, a: 1}
     m_PressedColor: {r: 0.9811321, g: 0.43040225, b: 0.43040225, a: 1}
-    m_SelectedColor: {r: 0.98039216, g: 0.43137255, b: 0.43137255, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.49292454, b: 0.49292454, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -893,7 +893,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.48998755, g: 0.8584906, b: 0.49257848, a: 1}
     m_PressedColor: {r: 0.9811321, g: 0.43040225, b: 0.43040225, a: 1}
-    m_SelectedColor: {r: 0.98039216, g: 0.43137255, b: 0.43137255, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 0.5, g: 0.49292454, b: 0.49292454, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -908,7 +908,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 5124380215756131013}
   m_OnClick:
     m_PersistentCalls:
@@ -1136,6 +1136,7 @@ GameObject:
   - component: {fileID: 3271077642763571927}
   - component: {fileID: 6493832087577922572}
   - component: {fileID: 3458157150350078220}
+  - component: {fileID: 1989447062805776898}
   m_Layer: 5
   m_Name: SettingsCanvas
   m_TagString: Untagged
@@ -1236,5 +1237,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e25cf557ec97908449a1318b9141292f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1989447062805776898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9038816626299047177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e3090ec3a823fa478ed86a47d219bc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

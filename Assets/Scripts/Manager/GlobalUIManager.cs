@@ -9,8 +9,14 @@ using UnityEngine.SceneManagement;
 public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 {
     private GameObject _loadingCanvas;
-    private GameObject _settingsCanvas;
+    private GameObject _settingsCanvs;
     private GameObject _quitCanvas;
+
+    private GameObject _audioSettingsCanvas;
+    private GameObject _graphicSettingsCanvas;
+    private GameObject _controlSettingsCanvas;
+
+    private GameObject _settingsCanvas;
 
     private TMP_Text _loadingText;
     private TMP_Text _loadingProgressText;
@@ -23,7 +29,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
     private Stack<GameObject> _uiStack = new Stack<GameObject>();
     private SceneUIController _currentSceneUI;
 
-    private void Awake()
+    private void Start()
     {
         ConnectLoading();
         ConnectSetting();
@@ -49,10 +55,18 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 
     private void ConnectSetting()
     {
+        // var settingsObject = Resources.Load<GameObject>("SettingsObject");
         var settingsObject = Resources.Load<GameObject>("SettingsCanvas");
-        _settingsCanvas = Instantiate(settingsObject);
-        _settingsCanvas.transform.SetParent(transform);
-        _settingsCanvas.SetActive(false);
+        _settingsCanvs = Instantiate(settingsObject, transform);
+        _settingsCanvs.SetActive(false);
+
+        var _audioSettingsObject = Resources.Load<GameObject>("AudioSettingsCanvas");
+        _audioSettingsCanvas = Instantiate(_audioSettingsObject, transform);
+
+        var _audioSettingsView = _audioSettingsCanvas.GetComponent<AudioSettingPresenter>();
+        _audioSettingsView.Init();
+
+        _audioSettingsCanvas.SetActive(false);
     }
 
     private void ConnectQuit()
@@ -80,7 +94,10 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
     }
 
     public void SetCurrentSceneUI(SceneUIController sceneUI) => _currentSceneUI = sceneUI;
-    public void PopUpSettings(GameObject currentPanel) => PushToStack(_settingsCanvas, currentPanel);
+    public void PopUpSettings(GameObject currentPanel) => PushToStack(_settingsCanvs, currentPanel);
+    public void PopUpGraphicSettings(GameObject currentPanel) => PushToStack(_graphicSettingsCanvas, currentPanel);
+    public void PopUpControlSettings(GameObject currentPanel) => PushToStack(_controlSettingsCanvas, currentPanel);
+    public void PopUpAudioSettings(GameObject currentPanel) => PushToStack(_audioSettingsCanvas, currentPanel);
     public void PopUpQuitConfirm(GameObject currentPanel) => PushToStack(_quitCanvas, currentPanel);
 
     //# Stack 관리
@@ -103,11 +120,11 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
             var previousPanel = _uiStack.Pop();
             ShowPanel(previousPanel);
         }
-        // else
-        // {
-        //     //# 스택이 비어있으면 씬 UI로 돌아가기
-        //     _currentSceneUI?.ShowDefaultUI();
-        // }
+        else
+        {
+            //# 스택이 비어있으면 씬 UI로 돌아가기
+            _currentSceneUI?.ShowDefaultUI();
+        }
     }
 
     public void ClearStack()
@@ -124,8 +141,12 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
 
     private void HideAllGlobalUI()
     {
-        _settingsCanvas.SetActive(false);
+        _settingsCanvs.SetActive(false);
         _quitCanvas.SetActive(false);
+        _audioSettingsCanvas.SetActive(false);
+        // _controlSettingsCanvas.SetActive(false);
+        // _graphicSettingsCanvas.SetActive(false);
+
         if (!GameManager.Instance.Scene.IsLoading)
         {
             _loadingCanvas.SetActive(false);
@@ -143,6 +164,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
         if (_loadingProgressText != null) _loadingProgressText.text = "0%";
         if (_loadingText != null) _loadingText.text = "Loading...";
     }
+
     public void UpdateLoadingUI(float progress)
     {
         if (_loadingProgressBar != null) _loadingProgressBar.value = progress;
@@ -155,6 +177,7 @@ public class GlobalUIManager : MonoBehaviour, ISceneLoadable
             _loadingText.text = "Loading" + new string('.', dotCount);
         }
     }
+
     public void CompleteSceneLoading()
     {
         if (_loadingText != null) _loadingText.text = "Complete!";

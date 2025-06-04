@@ -12,8 +12,8 @@ public class GameManager : MonoBehaviour
     public InputManager Input { get; private set; }
     public GlobalUIManager UI { get; private set; }
     public MySceneManager Scene { get; private set; }
+    public AudioManager Audio { get; private set; }
 
-    // private readonly float _defaultTime = 300f;
     [SerializeField] private float _defaultTime = 10;
     public string TitleSceneName = "TitleScene";
 
@@ -39,7 +39,7 @@ public class GameManager : MonoBehaviour
     }
 
     public Action<float> OnTimeChanged;
-    public Action<int[], string[]> OnGameOver;
+    public Action<int[], string[], string> OnGameOver;
     public Action<string, int> OnScoreAdded;
     public Action<string, int> OnTotalScoreChanged;
 
@@ -73,6 +73,7 @@ public class GameManager : MonoBehaviour
         Input = GetComponent<InputManager>();
         UI = GetComponent<GlobalUIManager>();
         Scene = GetComponent<MySceneManager>();
+        Audio = GetComponent<AudioManager>();
     }
 
     private void OnEnable()
@@ -113,9 +114,10 @@ public class GameManager : MonoBehaviour
     public void SetPlayerName(string name)
     {
         PlayerName = name;
+
         //todo 현재는 싱글 플레이어이므로, actorNumber는 0으로 사용
-        PlayersName.Add(0, PlayerName);
-        PlayersScore.Add(0, 0);
+        PlayersName[0] = PlayerName;
+        PlayersScore[0] = 0;
     }
 
     private void HandleGameStart()
@@ -127,17 +129,29 @@ public class GameManager : MonoBehaviour
         _isGameOver = false;
         _isPaused = false;
         InitializeTime();
+        Audio.Play2DSFX(AudioClipName.GameStartSound);
     }
 
     private void HandleGameOver()
     {
-        //todo Winner를 판별해야 함
         var sorted = PlayersScore.OrderByDescending(pair => pair.Value).ToArray();
-        int[] sortedScores = sorted.Select(pair => pair.Value).ToArray();
-        string[] sortedNames = sorted.Select(pair => PlayersName[pair.Key]).ToArray();
+        int[] sortedScore = sorted.Select(pair => pair.Value).ToArray();
+        string[] sortedName = sorted.Select(pair => PlayersName[pair.Key]).ToArray();
 
         Cursor.lockState = CursorLockMode.None;
-        OnGameOver?.Invoke(sortedScores, sortedNames);
+
+        string titleText;
+        if (PlayerName == sortedName[0])
+        {
+            titleText = "Win!";
+            Audio.Play2DSFX(AudioClipName.WinSound);
+        }
+        else
+        {
+            titleText = "Lose...";
+            Audio.Play2DSFX(AudioClipName.LoseSound);
+        }
+        OnGameOver?.Invoke(sortedScore, sortedName, titleText);
     }
 
     //# 게임을 다시 시작하거나 맵을 이동하면 초기화
@@ -145,7 +159,17 @@ public class GameManager : MonoBehaviour
     {
         PlayersName = new Dictionary<int, string>();
         PlayersScore = new Dictionary<int, int>();
-        OnTotalScoreChanged -= SetScore;
+
+        //todo 현재는 싱글 플레이어이므로, actorNumber는 0으로 사용
+        PlayersName[0] = PlayerName;
+        PlayersScore[0] = 0;
+
+        if (_isTitle)
+        {
+            OnTotalScoreChanged -= SetScore;
+            Audio.PlayBGM(AudioClipName.TitleBackground);
+        }
+        else Audio.PlayBGM(AudioClipName.LevelBackground);
     }
 
     private void SetScore(string playerName, int totalScore)

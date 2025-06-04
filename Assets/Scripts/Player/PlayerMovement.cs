@@ -7,7 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _playerMoveSpeed;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private float _groundCheckDistance;
-    [SerializeField] private float _deceleration = 0.91f;
+    [SerializeField] private float _deceleration = 0.90f;
 
     private Player _player;
     private Vector2 _moveInput;
@@ -118,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
 
         _latestVelocityY = _player.Rigid.velocity.y;
 
-        // Debug.Log(_latestVelocityY);
         //# Velocity의 값을 실제 0 ~ 1 사이로 normalize
         var move = transform.InverseTransformDirection(_player.Rigid.velocity) / _playerMoveSpeed;
 

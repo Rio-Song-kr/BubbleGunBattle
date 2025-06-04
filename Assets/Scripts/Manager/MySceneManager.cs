@@ -11,6 +11,8 @@ public class MySceneManager : MonoBehaviour
 
     private bool _isLoading = false;
     public bool IsLoading => _isLoading;
+    private string _prevSceneName = "TitleScene";
+    private int _prevSceneIndex = 0;
 
     private void Start()
     {
@@ -22,6 +24,9 @@ public class MySceneManager : MonoBehaviour
     {
         if (!_isLoading)
         {
+            // if (!_prevSceneName.Equals(sceneName))
+            GameManager.Instance.Audio.StopBGM();
+            _prevSceneName = sceneName;
             StartCoroutine(LoadSceneAsyncCoroutine(sceneName, isTitleScene));
         }
     }
@@ -30,6 +35,9 @@ public class MySceneManager : MonoBehaviour
     {
         if (!_isLoading)
         {
+            // if (_prevSceneIndex != sceneIndex)
+            GameManager.Instance.Audio.StopBGM();
+            _prevSceneIndex = sceneIndex;
             StartCoroutine(LoadSceneAsyncCoroutine(sceneIndex, isTitleScene));
         }
     }

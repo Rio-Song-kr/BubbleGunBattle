@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    // [SerializeField] private GameObject _bubblePrefab;
     [SerializeField] private Transform _fireTransform;
     [SerializeField] private float _fireDelay = 1.0f;
 

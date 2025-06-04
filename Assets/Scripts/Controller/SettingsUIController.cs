@@ -8,8 +8,6 @@ public class SettingsUIController : MonoBehaviour
     private GameObject _controlSettingsPanel;
     private GameObject _audioSettingsPanel;
 
-    private Stack<GameObject> _settingsStack = new Stack<GameObject>();
-
     private Button _graphicButton;
     private Button _controlButton;
     private Button _audioButton;
@@ -25,14 +23,13 @@ public class SettingsUIController : MonoBehaviour
             else if (child.transform.name.Equals("Control Button")) _controlButton = child.GetComponent<Button>();
             else if (child.transform.name.Equals("Audio Button")) _audioButton = child.GetComponent<Button>();
             else if (child.transform.name.Equals("Back Button")) _backButton = child.GetComponent<Button>();
-            else if (child.transform.name.Equals("Graphic Settings")) _graphicSettingsPanel = child.gameObject;
-            else if (child.transform.name.Equals("Control Settings")) _controlSettingsPanel = child.gameObject;
-            else if (child.transform.name.Equals("Audio Settings")) _audioSettingsPanel = child.gameObject;
+            else if (child.transform.name.Equals("Graphic Setting")) _graphicSettingsPanel = child.gameObject;
+            else if (child.transform.name.Equals("Control Setting")) _controlSettingsPanel = child.gameObject;
         }
 
         _graphicButton.onClick.AddListener(OnGraphicClicked);
         _controlButton.onClick.AddListener(OnControlClicked);
-        _audioButton.onClick.AddListener(OnSoundClicked);
+        _audioButton.onClick.AddListener(OnAudioClicked);
         _backButton.onClick.AddListener(OnBackClicked);
     }
 
@@ -40,62 +37,12 @@ public class SettingsUIController : MonoBehaviour
     {
         _graphicButton.onClick.RemoveListener(OnGraphicClicked);
         _controlButton.onClick.RemoveListener(OnControlClicked);
-        _audioButton.onClick.RemoveListener(OnSoundClicked);
+        _audioButton.onClick.RemoveListener(OnAudioClicked);
         _backButton.onClick.RemoveListener(OnBackClicked);
-        // _graphicButton.interactable = false;
-        // _graphicButton.interactable = true;
-        // _controlButton.interactable = false;
-        // _controlButton.interactable = true;
-        // _audioButton.interactable = false;
-        // _audioButton.interactable = true;
-        // _backButton.interactable = false;
-        // _backButton.interactable = true;
     }
 
-    private void PushSettingsPanel(GameObject panel)
-    {
-        var currentPanel = GetCurrentActiveSettingsPanel();
-        if (currentPanel != null)
-        {
-            _settingsStack.Push(currentPanel);
-            currentPanel.SetActive(false);
-        }
-        panel.SetActive(true);
-    }
-
-    // public void OnBackInSettings()
-    // {
-    //     if (_settingsStack.Count > 0)
-    //     {
-    //         GameObject previousPanel = _settingsStack.Pop();
-    //         HideAllSettingsPanels();
-    //         previousPanel.SetActive(true);
-    //     }
-    //     else
-    //     {
-    //         // Settings 메인으로 돌아가거나 Global Stack Pop
-    //         GlobalUIManager.Instance.PopFromStack();
-    //     }
-    // }
-
-    private void HideAllSettingsPanels()
-    {
-        _audioSettingsPanel.SetActive(false);
-        _graphicSettingsPanel.SetActive(false);
-        _controlSettingsPanel.SetActive(false);
-    }
-
-    private GameObject GetCurrentActiveSettingsPanel()
-    {
-        if (_audioSettingsPanel.activeInHierarchy) return _audioSettingsPanel;
-        if (_graphicSettingsPanel.activeInHierarchy) return _graphicSettingsPanel;
-        if (_controlSettingsPanel.activeInHierarchy) return _controlSettingsPanel;
-        return null;
-    }
-
-    //todo 세부 Panel 구현해야 함
-    private void OnGraphicClicked() => PushSettingsPanel(_audioSettingsPanel);
-    private void OnControlClicked() => PushSettingsPanel(_graphicSettingsPanel);
-    private void OnSoundClicked() => PushSettingsPanel(_controlSettingsPanel);
+    private void OnGraphicClicked() => GameManager.Instance.UI.PopUpGraphicSettings(gameObject);
+    private void OnControlClicked() => GameManager.Instance.UI.PopUpControlSettings(gameObject);
+    private void OnAudioClicked() => GameManager.Instance.UI.PopUpAudioSettings(gameObject);
     private void OnBackClicked() => GameManager.Instance.UI.PopFromStack(gameObject);
 }

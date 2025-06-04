@@ -30,16 +30,6 @@ public class PauseView : MonoBehaviour
         _mainMenuButton.onClick.RemoveListener(MainMenuButtonClicked);
         _quitButton.onClick.RemoveListener(QuitButtonClicked);
         _settingsButton.onClick.RemoveListener(SettingsButtonClicked);
-
-        //# 명시적 버튼 상태 리셋
-        _resumeButton.interactable = false;
-        _resumeButton.interactable = true;
-        _mainMenuButton.interactable = false;
-        _mainMenuButton.interactable = true;
-        _quitButton.interactable = false;
-        _quitButton.interactable = true;
-        _settingsButton.interactable = false;
-        _settingsButton.interactable = true;
     }
 
     private void ConnectCanvas()

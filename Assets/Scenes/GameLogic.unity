@@ -1193,7 +1193,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2048
   _groundCheckDistance: 1.2
-  _deceleration: 0.91
+  _deceleration: 0.9
 --- !u!114 &2138885274
 MonoBehaviour:
   m_ObjectHideFlags: 0

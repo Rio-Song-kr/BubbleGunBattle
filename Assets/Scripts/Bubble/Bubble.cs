@@ -33,7 +33,7 @@ public class Bubble : MonoBehaviour
 
     private void OnDisable()
     {
-        var effect = BubblePopEffectPool.Instance.Pool.Get();
+        var effect = BubblePopEffectPool.Instance.Pool?.Get();
         effect.transform.SetPositionAndRotation(transform.position, transform.rotation);
         effect.Play();
     }
@@ -49,6 +49,8 @@ public class Bubble : MonoBehaviour
 
     public void Shoot()
     {
+        GameManager.Instance.Audio.PlaySFX(AudioClipName.BubbleShootSound, transform.position);
+
         //# 시작 크기를 BubbleDataSO의 StartScale로 설정
         transform.localScale = Vector3.one * _bubbleData.StartScale;
 
@@ -161,6 +163,7 @@ public class Bubble : MonoBehaviour
             _objectInteractable = null;
         }
 
+        GameManager.Instance.Audio.PlaySFX(AudioClipName.BubblePopSound, transform.position);
         Release();
     }
 
